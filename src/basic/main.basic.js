@@ -1,4 +1,4 @@
-import { assembleShoppingCartHeader } from './views';
+import { createMainContainer, createShoppingCartHeader } from './views';
 
 let prodList;
 let bonusPts = 0;
@@ -16,8 +16,9 @@ const PRODUCT_5 = `p5`;
 let cartDisp;
 function main() {
   const root = document.getElementById('app');
-  const shoppingCartHeader = assembleShoppingCartHeader();
-  let gridContainer;
+  const shoppingCartHeader = createShoppingCartHeader();
+  const mainContainer = createMainContainer();
+
   let leftColumn;
   let selectorContainer;
   let rightColumn;
@@ -70,13 +71,12 @@ function main() {
 
   sel = document.createElement('select');
   sel.id = 'product-select';
-  gridContainer = document.createElement('div');
   leftColumn = document.createElement('div');
   leftColumn['className'] = 'bg-white border border-gray-200 p-8 overflow-y-auto';
   selectorContainer = document.createElement('div');
   selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
   sel.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
-  gridContainer.className = 'grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 flex-1 overflow-hidden';
+
   addBtn = document.createElement('button');
   stockInfo = document.createElement('div');
   addBtn.id = 'add-to-cart';
@@ -207,11 +207,11 @@ function main() {
       </p>
     </div>
   `;
-  gridContainer.appendChild(leftColumn);
-  gridContainer.appendChild(rightColumn);
+  mainContainer.appendChild(leftColumn);
+  mainContainer.appendChild(rightColumn);
   manualOverlay.appendChild(manualColumn);
   root.appendChild(shoppingCartHeader);
-  root.appendChild(gridContainer);
+  root.appendChild(mainContainer);
   root.appendChild(manualToggle);
   root.appendChild(manualOverlay);
   let initStock = 0;

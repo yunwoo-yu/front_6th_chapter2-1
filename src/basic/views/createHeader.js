@@ -1,54 +1,24 @@
-const HEADER_CLASSES = {
-  container: 'mb-8',
-  title: 'text-xs font-medium tracking-extra-wide uppercase mb-2',
-  subtitle: 'text-5xl tracking-tight leading-none',
-  itemCount: 'text-sm text-gray-500 font-normal mt-3',
-};
-
-const HEADER_TEXT = {
+const HEADER_CONTENT = {
   storeTitle: '🛒 Hanghae Online Store',
   pageTitle: 'Shopping Cart',
   initialItemCount: '🛍️ 0 items in cart',
 };
 
-// 헤더 요소 생성 함수들
-function createHeaderContainer() {
+const HEADER_CLASSES = 'mb-8';
+
+function createShoppingCartHeaderHTML() {
+  return /* HTML */ `
+    <h1 class="text-xs font-medium tracking-extra-wide uppercase mb-2">${HEADER_CONTENT.storeTitle}</h1>
+    <div class="text-5xl tracking-tight leading-none">${HEADER_CONTENT.pageTitle}</div>
+    <p id="item-count" class="text-sm text-gray-500 font-normal mt-3">${HEADER_CONTENT.initialItemCount}</p>
+  `;
+}
+
+export function createShoppingCartHeader() {
   const headerContainer = document.createElement('div');
-  headerContainer.className = HEADER_CLASSES.container;
-  return headerContainer;
-}
 
-function createStoreTitleElement() {
-  const storeTitleElement = document.createElement('h1');
-  storeTitleElement.className = HEADER_CLASSES.title;
-  storeTitleElement.textContent = HEADER_TEXT.storeTitle;
-  return storeTitleElement;
-}
-
-function createPageTitleElement() {
-  const pageTitleElement = document.createElement('div');
-  pageTitleElement.className = HEADER_CLASSES.subtitle;
-  pageTitleElement.textContent = HEADER_TEXT.pageTitle;
-  return pageTitleElement;
-}
-
-function createItemCountElement() {
-  const itemCountElement = document.createElement('p');
-  itemCountElement.id = 'item-count';
-  itemCountElement.className = HEADER_CLASSES.itemCount;
-  itemCountElement.textContent = HEADER_TEXT.initialItemCount;
-  return itemCountElement;
-}
-
-export function assembleShoppingCartHeader() {
-  const headerContainer = createHeaderContainer();
-  const storeTitleElement = createStoreTitleElement();
-  const pageTitleElement = createPageTitleElement();
-  const itemCountElement = createItemCountElement();
-
-  headerContainer.appendChild(storeTitleElement);
-  headerContainer.appendChild(pageTitleElement);
-  headerContainer.appendChild(itemCountElement);
+  headerContainer.className = HEADER_CLASSES;
+  headerContainer.innerHTML = createShoppingCartHeaderHTML();
 
   return headerContainer;
 }
