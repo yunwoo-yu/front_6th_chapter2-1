@@ -1,4 +1,10 @@
-import { createMainContainer, createShoppingCartHeader } from './views';
+import {
+  createAddToCartButton,
+  createMainContainer,
+  createProductSelectElement,
+  createShoppingCartHeader,
+  createStockInfoDisplay,
+} from './views';
 
 let prodList;
 let bonusPts = 0;
@@ -18,6 +24,9 @@ function main() {
   const root = document.getElementById('app');
   const shoppingCartHeader = createShoppingCartHeader();
   const mainContainer = createMainContainer();
+  const productSelectElement = createProductSelectElement();
+  const addToCartButton = createAddToCartButton();
+  const stockInfoDisplay = createStockInfoDisplay();
 
   let leftColumn;
   let selectorContainer;
@@ -69,22 +78,14 @@ function main() {
     },
   ];
 
-  sel = document.createElement('select');
-  sel.id = 'product-select';
+  sel = productSelectElement;
+  addBtn = addToCartButton;
+  stockInfo = stockInfoDisplay;
   leftColumn = document.createElement('div');
   leftColumn['className'] = 'bg-white border border-gray-200 p-8 overflow-y-auto';
   selectorContainer = document.createElement('div');
   selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
-  sel.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
 
-  addBtn = document.createElement('button');
-  stockInfo = document.createElement('div');
-  addBtn.id = 'add-to-cart';
-  stockInfo.id = 'stock-status';
-  stockInfo.className = 'text-xs text-red-500 mt-3 whitespace-pre-line';
-  addBtn.innerHTML = 'Add to Cart';
-  addBtn.className =
-    'w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all';
   selectorContainer.appendChild(sel);
   selectorContainer.appendChild(addBtn);
   selectorContainer.appendChild(stockInfo);
