@@ -1,3 +1,5 @@
+import { assembleShoppingCartHeader } from './views';
+
 let prodList;
 let bonusPts = 0;
 let stockInfo;
@@ -13,8 +15,8 @@ const p4 = 'p4';
 const PRODUCT_5 = `p5`;
 let cartDisp;
 function main() {
-  var root;
-  let header;
+  const root = document.getElementById('app');
+  const shoppingCartHeader = assembleShoppingCartHeader();
   let gridContainer;
   let leftColumn;
   let selectorContainer;
@@ -65,14 +67,7 @@ function main() {
       suggestSale: false,
     },
   ];
-  var root = document.getElementById('app');
-  header = document.createElement('div');
-  header.className = 'mb-8';
-  header.innerHTML = `
-    <h1 class="text-xs font-medium tracking-extra-wide uppercase mb-2">🛒 Hanghae Online Store</h1>
-    <div class="text-5xl tracking-tight leading-none">Shopping Cart</div>
-    <p id="item-count" class="text-sm text-gray-500 font-normal mt-3">🛍️ 0 items in cart</p>
-  `;
+
   sel = document.createElement('select');
   sel.id = 'product-select';
   gridContainer = document.createElement('div');
@@ -215,7 +210,7 @@ function main() {
   gridContainer.appendChild(leftColumn);
   gridContainer.appendChild(rightColumn);
   manualOverlay.appendChild(manualColumn);
-  root.appendChild(header);
+  root.appendChild(shoppingCartHeader);
   root.appendChild(gridContainer);
   root.appendChild(manualToggle);
   root.appendChild(manualOverlay);
