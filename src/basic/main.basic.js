@@ -503,34 +503,16 @@ function doRenderBonusPoints() {
     }
   }
 }
-function onGetStockTotal() {
-  let totalStock = 0;
-  for (let i = 0; i < products.length; i++) {
-    const currentProduct = products[i];
 
-    totalStock += currentProduct.q;
-  }
-  return totalStock;
+function handleStockInfoUpdate() {
+  const infoMessages = products
+    .filter((item) => item.q < 5)
+    .map((item) => (item.q === 0 ? `${item.name}: 품절` : `${item.name}: 재고 부족 (${item.q}개 남음)`))
+    .join('\n');
+
+  stockInfo.textContent = infoMessages;
 }
-var handleStockInfoUpdate = function () {
-  let infoMsg;
-  let totalStock;
-  let messageOptimizer;
-  infoMsg = '';
-  totalStock = onGetStockTotal();
-  if (totalStock < 30) {
-  }
-  products.forEach(function (item) {
-    if (item.q < 5) {
-      if (item.q > 0) {
-        infoMsg = infoMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
-      } else {
-        infoMsg = infoMsg + item.name + ': 품절\n';
-      }
-    }
-  });
-  stockInfo.textContent = infoMsg;
-};
+
 function doUpdatePricesInCart() {
   let totalCount = 0,
     j = 0;
