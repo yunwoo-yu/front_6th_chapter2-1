@@ -5,7 +5,7 @@ export const products = [
     val: 10000,
     originalVal: 10000,
     q: 50,
-    onSale: true,
+    onSale: false,
     suggestSale: false,
   },
   {

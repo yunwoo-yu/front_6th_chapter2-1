@@ -17,7 +17,7 @@ import {
 let bonusPts = 0;
 let itemCnt;
 let lastSel;
-const sel = createProductSelectElement();
+const selectElement = createProductSelectElement();
 const addBtn = createAddToCartButton();
 const stockInfo = createStockInfoDisplay();
 let totalAmt = 0;
@@ -46,7 +46,7 @@ function main() {
   itemCnt = 0;
   lastSel = null;
 
-  selectorContainer.appendChild(sel);
+  selectorContainer.appendChild(selectElement);
   selectorContainer.appendChild(addBtn);
   selectorContainer.appendChild(stockInfo);
   leftColumn.appendChild(selectorContainer);
@@ -116,51 +116,81 @@ function main() {
   //   }, 60000);
   // }, Math.random() * 20000);
 }
+
+// 상품 셀렉트 옵션 업데이트
 function onUpdateSelectOptions() {
-  let totalStock;
-  let opt;
-  let discountText;
-  sel.innerHTML = '';
-  totalStock = 0;
+  let totalStock = 0;
+  selectElement.innerHTML = '';
+
+  function getSaleText(item) {
+    let saleText = '';
+    if (item.onSale) saleText += ' ⚡SALE';
+    if (item.suggestSale) saleText += ' 💝추천';
+    return saleText;
+  }
+
+  // 상품 표시 정보 생성 함수
+  function getProductDisplayInfo(item) {
+    const { name, val, originalVal, onSale, suggestSale } = item;
+
+    // 세일 조합에 따른 처리
+    if (onSale && suggestSale) {
+      return {
+        text: `⚡💝${name} - ${originalVal}원 → ${val}원 (25% SUPER SALE!)`,
+        className: 'text-purple-600 font-bold',
+      };
+    }
+
+    if (onSale) {
+      return {
+        text: `⚡${name} - ${originalVal}원 → ${val}원 (20% SALE!)`,
+        className: 'text-red-500 font-bold',
+      };
+    }
+
+    if (suggestSale) {
+      return {
+        text: `💝${name} - ${originalVal}원 → ${val}원 (5% 추천할인!)`,
+        className: 'text-blue-500 font-bold',
+      };
+    }
+
+    // 일반 상품
+    return {
+      text: `${name} - ${val}원${getSaleText(item)}`,
+      className: '',
+    };
+  }
+
+  // 총 재고 계산
   for (let idx = 0; idx < products.length; idx++) {
-    const _p = products[idx];
-    totalStock = totalStock + _p.q;
+    totalStock += products[idx].q;
   }
-  for (let i = 0; i < products.length; i++) {
-    (function () {
-      const item = products[i];
-      opt = document.createElement('option');
-      opt.value = item.id;
-      discountText = '';
-      if (item.onSale) discountText += ' ⚡SALE';
-      if (item.suggestSale) discountText += ' 💝추천';
-      if (item.q === 0) {
-        opt.textContent = item.name + ' - ' + item.val + '원 (품절)' + discountText;
-        opt.disabled = true;
-        opt.className = 'text-gray-400';
-      } else {
-        if (item.onSale && item.suggestSale) {
-          opt.textContent = '⚡💝' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (25% SUPER SALE!)';
-          opt.className = 'text-purple-600 font-bold';
-        } else if (item.onSale) {
-          opt.textContent = '⚡' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (20% SALE!)';
-          opt.className = 'text-red-500 font-bold';
-        } else if (item.suggestSale) {
-          opt.textContent = '💝' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (5% 추천할인!)';
-          opt.className = 'text-blue-500 font-bold';
-        } else {
-          opt.textContent = item.name + ' - ' + item.val + '원' + discountText;
-        }
-      }
-      sel.appendChild(opt);
-    })();
-  }
-  if (totalStock < 50) {
-    sel.style.borderColor = 'orange';
-  } else {
-    sel.style.borderColor = '';
-  }
+
+  // 옵션 생성
+  products.forEach((item) => {
+    const option = document.createElement('option');
+    option.value = item.id;
+
+    // 품절 상품 처리
+    if (item.q === 0) {
+      option.textContent = `${item.name} - ${item.val}원 (품절)${getSaleText(item)}`;
+      option.disabled = true;
+      option.className = 'text-gray-400';
+    } else {
+      // 재고 있는 상품 처리
+      const { text, className } = getProductDisplayInfo(item);
+      option.textContent = text;
+      option.className = className;
+    }
+
+    selectElement.appendChild(option);
+  });
+
+  // 재고 부족 시 테두리 색상 변경
+  selectElement.style.borderColor = totalStock < 50 ? 'orange' : '';
 }
+
 function handleCalculateCartStuff() {
   let cartItems;
   let subTot;
@@ -561,7 +591,7 @@ function doUpdatePricesInCart() {
 }
 main();
 addBtn.addEventListener('click', function () {
-  const selItem = sel.value;
+  const selItem = selectElement.value;
   let hasItem = false;
   for (let idx = 0; idx < products.length; idx++) {
     if (products[idx].id === selItem) {
