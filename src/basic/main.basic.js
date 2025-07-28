@@ -1,3 +1,4 @@
+import { products } from './data';
 import {
   createAddToCartButton,
   createCartList,
@@ -13,7 +14,6 @@ import {
   createStockInfoDisplay,
 } from './views';
 
-let prodList;
 let bonusPts = 0;
 let itemCnt;
 let lastSel;
@@ -45,45 +45,6 @@ function main() {
   totalAmt = 0;
   itemCnt = 0;
   lastSel = null;
-  prodList = [
-    {
-      id: PRODUCT_ONE,
-      name: '버그 없애는 키보드',
-      val: 10000,
-      originalVal: 10000,
-      q: 50,
-      onSale: false,
-      suggestSale: false,
-    },
-    { id: p2, name: '생산성 폭발 마우스', val: 20000, originalVal: 20000, q: 30, onSale: false, suggestSale: false },
-    {
-      id: product_3,
-      name: '거북목 탈출 모니터암',
-      val: 30000,
-      originalVal: 30000,
-      q: 20,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: p4,
-      name: '에러 방지 노트북 파우치',
-      val: 15000,
-      originalVal: 15000,
-      q: 0,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: PRODUCT_5,
-      name: `코딩할 때 듣는 Lo-Fi 스피커`,
-      val: 25000,
-      originalVal: 25000,
-      q: 10,
-      onSale: false,
-      suggestSale: false,
-    },
-  ];
 
   selectorContainer.appendChild(sel);
   selectorContainer.appendChild(addBtn);
@@ -110,52 +71,50 @@ function main() {
   root.appendChild(mainContainer);
   root.appendChild(manualToggleButton);
   root.appendChild(manualOverlay);
-  let initStock = 0;
-  for (let i = 0; i < prodList.length; i++) {
-    initStock += prodList[i].q;
-  }
+
   onUpdateSelectOptions();
   handleCalculateCartStuff();
-  lightningDelay = Math.random() * 10000;
-  setTimeout(() => {
-    setInterval(function () {
-      const luckyIdx = Math.floor(Math.random() * prodList.length);
-      const luckyItem = prodList[luckyIdx];
-      if (luckyItem.q > 0 && !luckyItem.onSale) {
-        luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
-        luckyItem.onSale = true;
-        alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        onUpdateSelectOptions();
-        doUpdatePricesInCart();
-      }
-    }, 30000);
-  }, lightningDelay);
-  setTimeout(function () {
-    setInterval(function () {
-      if (cartDisp.children.length === 0) {
-      }
-      if (lastSel) {
-        let suggest = null;
-        for (let k = 0; k < prodList.length; k++) {
-          if (prodList[k].id !== lastSel) {
-            if (prodList[k].q > 0) {
-              if (!prodList[k].suggestSale) {
-                suggest = prodList[k];
-                break;
-              }
-            }
-          }
-        }
-        if (suggest) {
-          alert('💝 ' + suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-          suggest.val = Math.round((suggest.val * (100 - 5)) / 100);
-          suggest.suggestSale = true;
-          onUpdateSelectOptions();
-          doUpdatePricesInCart();
-        }
-      }
-    }, 60000);
-  }, Math.random() * 20000);
+  // 개발 기간동안 alert 잠시 제거
+  // lightningDelay = Math.random() * 10000;
+  // setTimeout(() => {
+  //   setInterval(function () {
+  //     const luckyIdx = Math.floor(Math.random() * products.length);
+  //     const luckyItem = products[luckyIdx];
+  //     if (luckyItem.q > 0 && !luckyItem.onSale) {
+  //       luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
+  //       luckyItem.onSale = true;
+  //       alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+  //       onUpdateSelectOptions();
+  //       doUpdatePricesInCart();
+  //     }
+  //   }, 30000);
+  // }, lightningDelay);
+  // setTimeout(function () {
+  //   setInterval(function () {
+  //     if (cartDisp.children.length === 0) {
+  //     }
+  //     if (lastSel) {
+  //       let suggest = null;
+  //       for (let k = 0; k < products.length; k++) {
+  //         if (products[k].id !== lastSel) {
+  //           if (products[k].q > 0) {
+  //             if (!products[k].suggestSale) {
+  //               suggest = products[k];
+  //               break;
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (suggest) {
+  //         alert('💝 ' + suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
+  //         suggest.val = Math.round((suggest.val * (100 - 5)) / 100);
+  //         suggest.suggestSale = true;
+  //         onUpdateSelectOptions();
+  //         doUpdatePricesInCart();
+  //       }
+  //     }
+  //   }, 60000);
+  // }, Math.random() * 20000);
 }
 function onUpdateSelectOptions() {
   let totalStock;
@@ -163,13 +122,13 @@ function onUpdateSelectOptions() {
   let discountText;
   sel.innerHTML = '';
   totalStock = 0;
-  for (let idx = 0; idx < prodList.length; idx++) {
-    const _p = prodList[idx];
+  for (let idx = 0; idx < products.length; idx++) {
+    const _p = products[idx];
     totalStock = totalStock + _p.q;
   }
-  for (var i = 0; i < prodList.length; i++) {
+  for (let i = 0; i < products.length; i++) {
     (function () {
-      const item = prodList[i];
+      const item = products[i];
       opt = document.createElement('option');
       opt.value = item.id;
       discountText = '';
@@ -232,17 +191,17 @@ function handleCalculateCartStuff() {
   bulkDisc = subTot;
   itemDiscounts = [];
   lowStockItems = [];
-  for (idx = 0; idx < prodList.length; idx++) {
-    if (prodList[idx].q < 5 && prodList[idx].q > 0) {
-      lowStockItems.push(prodList[idx].name);
+  for (idx = 0; idx < products.length; idx++) {
+    if (products[idx].q < 5 && products[idx].q > 0) {
+      lowStockItems.push(products[idx].name);
     }
   }
   for (let i = 0; i < cartItems.length; i++) {
     (function () {
       let curItem;
-      for (let j = 0; j < prodList.length; j++) {
-        if (prodList[j].id === cartItems[i].id) {
-          curItem = prodList[j];
+      for (let j = 0; j < products.length; j++) {
+        if (products[j].id === cartItems[i].id) {
+          curItem = products[j];
           break;
         }
       }
@@ -317,9 +276,9 @@ function handleCalculateCartStuff() {
   if (subTot > 0) {
     for (let i = 0; i < cartItems.length; i++) {
       var curItem;
-      for (let j = 0; j < prodList.length; j++) {
-        if (prodList[j].id === cartItems[i].id) {
-          curItem = prodList[j];
+      for (let j = 0; j < products.length; j++) {
+        if (products[j].id === cartItems[i].id) {
+          curItem = products[j];
           break;
         }
       }
@@ -412,8 +371,8 @@ function handleCalculateCartStuff() {
     }
   }
   stockMsg = '';
-  for (let stockIdx = 0; stockIdx < prodList.length; stockIdx++) {
-    const item = prodList[stockIdx];
+  for (let stockIdx = 0; stockIdx < products.length; stockIdx++) {
+    const item = products[stockIdx];
     if (item.q < 5) {
       if (item.q > 0) {
         stockMsg = stockMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
@@ -426,21 +385,20 @@ function handleCalculateCartStuff() {
   handleStockInfoUpdate();
   doRenderBonusPoints();
 }
-var doRenderBonusPoints = function () {
-  let basePoints;
-  let finalPoints;
-  let pointsDetail;
+function doRenderBonusPoints() {
+  const basePoints = Math.floor(totalAmt / 1000);
+  const pointsDetail = [];
+  const nodes = cartDisp.children;
+  let finalPoints = 0;
   let hasKeyboard;
   let hasMouse;
   let hasMonitorArm;
-  let nodes;
+
   if (cartDisp.children.length === 0) {
     document.getElementById('loyalty-points').style.display = 'none';
     return;
   }
-  basePoints = Math.floor(totalAmt / 1000);
-  finalPoints = 0;
-  pointsDetail = [];
+
   if (basePoints > 0) {
     finalPoints = basePoints;
     pointsDetail.push('기본: ' + basePoints + 'p');
@@ -454,16 +412,19 @@ var doRenderBonusPoints = function () {
   hasKeyboard = false;
   hasMouse = false;
   hasMonitorArm = false;
-  nodes = cartDisp.children;
+
   for (const node of nodes) {
     let product = null;
-    for (let pIdx = 0; pIdx < prodList.length; pIdx++) {
-      if (prodList[pIdx].id === node.id) {
-        product = prodList[pIdx];
+
+    for (let pIdx = 0; pIdx < products.length; pIdx++) {
+      if (products[pIdx].id === node.id) {
+        product = products[pIdx];
         break;
       }
     }
+
     if (!product) continue;
+
     if (product.id === PRODUCT_ONE) {
       hasKeyboard = true;
     } else if (product.id === p2) {
@@ -511,17 +472,15 @@ var doRenderBonusPoints = function () {
       ptsTag.style.display = 'block';
     }
   }
-};
+}
 function onGetStockTotal() {
-  let sum;
-  let i;
-  let currentProduct;
-  sum = 0;
-  for (i = 0; i < prodList.length; i++) {
-    currentProduct = prodList[i];
-    sum += currentProduct.q;
+  let totalStock = 0;
+  for (let i = 0; i < products.length; i++) {
+    const currentProduct = products[i];
+
+    totalStock += currentProduct.q;
   }
-  return sum;
+  return totalStock;
 }
 var handleStockInfoUpdate = function () {
   let infoMsg;
@@ -531,7 +490,7 @@ var handleStockInfoUpdate = function () {
   totalStock = onGetStockTotal();
   if (totalStock < 30) {
   }
-  prodList.forEach(function (item) {
+  products.forEach(function (item) {
     if (item.q < 5) {
       if (item.q > 0) {
         infoMsg = infoMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
@@ -559,9 +518,9 @@ function doUpdatePricesInCart() {
   for (let i = 0; i < cartItems.length; i++) {
     const itemId = cartItems[i].id;
     let product = null;
-    for (let productIdx = 0; productIdx < prodList.length; productIdx++) {
-      if (prodList[productIdx].id === itemId) {
-        product = prodList[productIdx];
+    for (let productIdx = 0; productIdx < products.length; productIdx++) {
+      if (products[productIdx].id === itemId) {
+        product = products[productIdx];
         break;
       }
     }
@@ -604,8 +563,8 @@ main();
 addBtn.addEventListener('click', function () {
   const selItem = sel.value;
   let hasItem = false;
-  for (let idx = 0; idx < prodList.length; idx++) {
-    if (prodList[idx].id === selItem) {
+  for (let idx = 0; idx < products.length; idx++) {
+    if (products[idx].id === selItem) {
       hasItem = true;
       break;
     }
@@ -614,9 +573,9 @@ addBtn.addEventListener('click', function () {
     return;
   }
   let itemToAdd = null;
-  for (let j = 0; j < prodList.length; j++) {
-    if (prodList[j].id === selItem) {
-      itemToAdd = prodList[j];
+  for (let j = 0; j < products.length; j++) {
+    if (products[j].id === selItem) {
+      itemToAdd = products[j];
       break;
     }
   }
@@ -668,9 +627,9 @@ cartDisp.addEventListener('click', function (event) {
     const prodId = tgt.dataset.productId;
     const itemElem = document.getElementById(prodId);
     let prod = null;
-    for (let prdIdx = 0; prdIdx < prodList.length; prdIdx++) {
-      if (prodList[prdIdx].id === prodId) {
-        prod = prodList[prdIdx];
+    for (let prdIdx = 0; prdIdx < products.length; prdIdx++) {
+      if (products[prdIdx].id === prodId) {
+        prod = products[prdIdx];
         break;
       }
     }
@@ -694,8 +653,7 @@ cartDisp.addEventListener('click', function (event) {
       prod.q += remQty;
       itemElem.remove();
     }
-    if (prod && prod.q < 5) {
-    }
+
     handleCalculateCartStuff();
     onUpdateSelectOptions();
   }
