@@ -1,4 +1,5 @@
 export * from './cartList';
 export * from './containers';
-export * from './createHeader';
-export * from './createLeftColumn';
+export * from './header';
+export * from './leftColumn';
+export * from './rightColumn';
