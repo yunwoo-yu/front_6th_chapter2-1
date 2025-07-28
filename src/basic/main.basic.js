@@ -1,35 +1,35 @@
 import {
   createAddToCartButton,
+  createCartList,
+  createLeftColumn,
   createMainContainer,
   createProductSelectElement,
+  createSelectorContainer,
   createShoppingCartHeader,
   createStockInfoDisplay,
 } from './views';
 
 let prodList;
 let bonusPts = 0;
-let stockInfo;
 let itemCnt;
 let lastSel;
-let sel;
-let addBtn;
+const sel = createProductSelectElement();
+const addBtn = createAddToCartButton();
+const stockInfo = createStockInfoDisplay();
 let totalAmt = 0;
 const PRODUCT_ONE = 'p1';
 const p2 = 'p2';
 const product_3 = 'p3';
 const p4 = 'p4';
 const PRODUCT_5 = `p5`;
-let cartDisp;
+const cartDisp = createCartList();
 function main() {
   const root = document.getElementById('app');
   const shoppingCartHeader = createShoppingCartHeader();
   const mainContainer = createMainContainer();
-  const productSelectElement = createProductSelectElement();
-  const addToCartButton = createAddToCartButton();
-  const stockInfoDisplay = createStockInfoDisplay();
+  const selectorContainer = createSelectorContainer();
+  const leftColumn = createLeftColumn();
 
-  let leftColumn;
-  let selectorContainer;
   let rightColumn;
   let manualToggle;
   let manualOverlay;
@@ -78,21 +78,11 @@ function main() {
     },
   ];
 
-  sel = productSelectElement;
-  addBtn = addToCartButton;
-  stockInfo = stockInfoDisplay;
-  leftColumn = document.createElement('div');
-  leftColumn['className'] = 'bg-white border border-gray-200 p-8 overflow-y-auto';
-  selectorContainer = document.createElement('div');
-  selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
-
   selectorContainer.appendChild(sel);
   selectorContainer.appendChild(addBtn);
   selectorContainer.appendChild(stockInfo);
   leftColumn.appendChild(selectorContainer);
-  cartDisp = document.createElement('div');
   leftColumn.appendChild(cartDisp);
-  cartDisp.id = 'cart-items';
   rightColumn = document.createElement('div');
   rightColumn.className = 'bg-black text-white p-8 flex flex-col';
   rightColumn.innerHTML = `
