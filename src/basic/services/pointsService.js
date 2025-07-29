@@ -1,5 +1,5 @@
 import { PRODUCT_IDS, products } from '../data.js';
-import { POINT_RATES, QUANTITY_THRESHOLDS } from '../utils/constants.js';
+import { POINT_RATES, QUANTITY_THRESHOLDS } from '../utils';
 
 /**
  * 기본 포인트 계산 (최종 결제 금액의 0.1%)

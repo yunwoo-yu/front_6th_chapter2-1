@@ -1,5 +1,5 @@
 import { products } from '../data.js';
-import { DISCOUNT_RATES, QUANTITY_THRESHOLDS } from '../utils/constants.js';
+import { DISCOUNT_RATES, QUANTITY_THRESHOLDS } from '../utils';
 import { isTuesday, safeDivision } from '../utils/formatUtils.js';
 
 /**

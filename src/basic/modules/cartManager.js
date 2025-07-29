@@ -1,3 +1,4 @@
+import { UI_CONSTANTS } from '../utils';
 import { findProductById } from './productManager.js';
 
 let cartListElement = null;
@@ -91,8 +92,7 @@ function updateCartItemQuantity(cartItem, product, quantityChange) {
 function createNewCartItem(product) {
   const cartItem = document.createElement('div');
   cartItem.id = product.id;
-  cartItem.className =
-    'grid grid-cols-[80px_1fr_auto] gap-5 py-5 border-b border-gray-100 first:pt-0 last:border-b-0 last:pb-0';
+  cartItem.className = UI_CONSTANTS.GRID_LAYOUT;
   cartItem.innerHTML = buildCartItemHTML(product);
 
   cartListElement.appendChild(cartItem);
@@ -105,8 +105,8 @@ function buildCartItemHTML(product) {
   const saleIcon = buildSaleIcon(product);
 
   return `
-    <div class="w-20 h-20 bg-gradient-black relative overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-white/10 -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
+    <div class="${UI_CONSTANTS.PRODUCT_IMAGE_SIZE} bg-gradient-black relative overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 ${UI_CONSTANTS.PRODUCT_IMAGE_OVERLAY} ${UI_CONSTANTS.WHITE_OPACITY} -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
     </div>
     <div>
       <h3 class="text-base font-normal mb-1 tracking-tight">${saleIcon}${product.name}</h3>
@@ -114,7 +114,7 @@ function buildCartItemHTML(product) {
       <p class="text-xs text-black mb-3">${priceHTML}</p>
       <div class="flex items-center gap-4">
         <button class="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white" data-product-id="${product.id}" data-change="-1">−</button>
-        <span class="quantity-number text-sm font-normal min-w-[20px] text-center tabular-nums">1</span>
+        <span class="quantity-number text-sm font-normal ${UI_CONSTANTS.QUANTITY_MIN_WIDTH} text-center tabular-nums">1</span>
         <button class="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white" data-product-id="${product.id}" data-change="1">+</button>
       </div>
     </div>
@@ -151,7 +151,7 @@ function buildSaleIcon(product) {
 
 function getDiscountColorClass(product) {
   if (product.onSale && product.suggestSale) return 'text-purple-600';
-  if (product.onSale) return 'text-red-500';
-  if (product.suggestSale) return 'text-blue-500';
+  if (product.onSale) return UI_CONSTANTS.SALE_COLOR;
+  if (product.suggestSale) return UI_CONSTANTS.SUGGEST_COLOR;
   return '';
 }
