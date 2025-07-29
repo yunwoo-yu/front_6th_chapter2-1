@@ -12,7 +12,7 @@ export function renderProductOptions() {
   if (!selectDropdownElement) return;
 
   selectDropdownElement.innerHTML = '';
-  const totalStockCount = products.reduce((total, product) => total + product.q, 0);
+  const totalStockCount = products.reduce((total, product) => total + product.quantity, 0);
 
   products.forEach((product) => {
     const option = createProductOption(product);
@@ -27,8 +27,10 @@ export function renderStockStatus() {
   if (!stockDisplayElement) return;
 
   const lowStockMessages = products
-    .filter((product) => product.q < 5)
-    .map((product) => (product.q === 0 ? `${product.name}: 품절` : `${product.name}: 재고 부족 (${product.q}개 남음)`))
+    .filter((product) => product.quantity < 5)
+    .map((product) =>
+      product.quantity === 0 ? `${product.name}: 품절` : `${product.name}: 재고 부족 (${product.quantity}개 남음)`
+    )
     .join('\n');
 
   stockDisplayElement.textContent = lowStockMessages;
@@ -41,9 +43,9 @@ export function findProductById(productId) {
 export function removeStock(productId, qty = 1) {
   const product = findProductById(productId);
 
-  if (!product || product.q < qty) return false;
+  if (!product || product.quantity < qty) return false;
 
-  product.q -= qty;
+  product.quantity -= qty;
 
   return true;
 }
@@ -53,7 +55,7 @@ export function addStock(productId, qty = 1) {
 
   if (!product) return false;
 
-  product.q += qty;
+  product.quantity += qty;
 
   return true;
 }
@@ -61,7 +63,7 @@ export function addStock(productId, qty = 1) {
 export function validateStock(productId, requestedQty) {
   const product = findProductById(productId);
 
-  return product ? product.q >= requestedQty : false;
+  return product ? product.quantity >= requestedQty : false;
 }
 
 function createProductOption(product) {
@@ -69,7 +71,7 @@ function createProductOption(product) {
 
   option.value = product.id;
 
-  if (product.q === 0) {
+  if (product.quantity === 0) {
     const saleText = buildSaleText(product);
 
     option.textContent = `${product.name} - ${product.discountPrice}원 (품절)${saleText}`;

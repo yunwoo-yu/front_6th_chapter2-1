@@ -9,7 +9,7 @@ export function initCartElements(cartElement) {
 
 export function addItemToCart(productId) {
   const product = findProductById(productId);
-  if (!product || product.q <= 0) return false;
+  if (!product || product.quantity <= 0) return false;
 
   const existingCartItem = document.getElementById(productId);
 
@@ -27,7 +27,7 @@ export function removeItemFromCart(productId) {
   if (!cartItem || !product) return false;
 
   const currentQty = parseInt(cartItem.querySelector('.quantity-number').textContent);
-  product.q += currentQty;
+  product.quantity += currentQty;
   cartItem.remove();
   return true;
 }
@@ -46,9 +46,9 @@ export function changeItemQuantity(productId, quantityChange) {
     return removeItemFromCart(productId);
   }
 
-  if (newQty <= product.q + currentQty) {
+  if (newQty <= product.quantity + currentQty) {
     qtyElement.textContent = newQty;
-    product.q -= quantityChange;
+    product.quantity -= quantityChange;
     return true;
   }
 
@@ -80,9 +80,9 @@ function updateCartItemQuantity(cartItem, product, quantityChange) {
   const currentQty = parseInt(qtyElement.textContent);
   const newQty = currentQty + quantityChange;
 
-  if (newQty <= product.q + currentQty) {
+  if (newQty <= product.quantity + currentQty) {
     qtyElement.textContent = newQty;
-    product.q -= quantityChange;
+    product.quantity -= quantityChange;
     return true;
   }
 
@@ -96,7 +96,7 @@ function createNewCartItem(product) {
   cartItem.innerHTML = buildCartItemHTML(product);
 
   cartListElement.appendChild(cartItem);
-  product.q--;
+  product.quantity--;
   return true;
 }
 

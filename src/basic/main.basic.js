@@ -365,7 +365,7 @@ function main() {
 
     const selectedProduct = products.find((p) => p.id === selectedItemId);
 
-    if (!selectedProduct || selectedProduct.q <= 0) {
+    if (!selectedProduct || selectedProduct.quantity <= 0) {
       return;
     }
 
@@ -387,9 +387,9 @@ function main() {
     const currentQty = parseInt(qtyElement.textContent);
     const newQty = currentQty + 1;
 
-    if (newQty <= product.q + currentQty) {
+    if (newQty <= product.quantity + currentQty) {
       qtyElement.textContent = newQty;
-      product.q--;
+      product.quantity--;
     } else {
       alert('재고가 부족합니다.');
     }
@@ -404,7 +404,7 @@ function main() {
     newItem.innerHTML = createCartItemHTML(product);
 
     cartItemsList.appendChild(newItem);
-    product.q--;
+    product.quantity--;
   }
 
   // 장바구니 아이템 HTML 생성
@@ -503,7 +503,7 @@ function main() {
     if (newQty <= 0) {
       // 수량이 0 이하가 되면 아이템 제거
       removeCartItem(itemElement, product, currentQty);
-    } else if (newQty <= product.q + currentQty) {
+    } else if (newQty <= product.quantity + currentQty) {
       // 재고 범위 내에서 수량 변경
       updateItemQuantity(qtyElement, product, quantityChange, newQty);
     } else {
@@ -523,12 +523,12 @@ function main() {
   // 수량 업데이트
   function updateItemQuantity(qtyElement, product, quantityChange, newQty) {
     qtyElement.textContent = newQty;
-    product.q -= quantityChange;
+    product.quantity -= quantityChange;
   }
 
   // 장바구니 아이템 제거
   function removeCartItem(itemElement, product, currentQty) {
-    product.q += currentQty;
+    product.quantity += currentQty;
     itemElement.remove();
   }
 }
