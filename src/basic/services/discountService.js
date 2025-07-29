@@ -9,24 +9,8 @@ import { isTuesday, safeDivision } from '../utils/formatUtils.js';
  */
 const extractCartItemData = (cartItem) => {
   const product = products.find((p) => p.id === cartItem.id);
-
-  // 상품을 찾지 못한 경우 early return
-  if (!product) {
-    console.warn(`Product not found for ID: ${cartItem.id}`);
-    return null;
-  }
-
   const quantityElement = cartItem.querySelector('.quantity-number');
-  if (!quantityElement) {
-    console.warn(`Quantity element not found for product: ${product.name}`);
-    return null;
-  }
-
   const quantity = parseInt(quantityElement.textContent, 10);
-  if (isNaN(quantity) || quantity <= 0) {
-    console.warn(`Invalid quantity for product: ${product.name}`);
-    return null;
-  }
 
   return { product, quantity };
 };
