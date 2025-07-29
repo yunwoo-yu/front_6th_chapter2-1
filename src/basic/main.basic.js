@@ -1,4 +1,5 @@
 import { PRODUCT_IDS, products } from './data';
+import { initProductElements, renderProductOptions, renderStockStatus } from './modules/productManager.js';
 import {
   createAddToCartButton,
   createCartList,
@@ -37,6 +38,9 @@ function main() {
   let lastSelectedProductId = null;
   let finalTotalAmount = 0;
 
+  // Initialize ProductManager
+  initProductElements(productSelectDropdown, stockStatusDisplay);
+
   productSelectorContainer.appendChild(productSelectDropdown);
   productSelectorContainer.appendChild(addToCartButton);
   productSelectorContainer.appendChild(stockStatusDisplay);
@@ -63,7 +67,7 @@ function main() {
     }
   };
 
-  onUpdateSelectOptions();
+  renderProductOptions();
   handleCalculateCartStuff();
 
   // setTimeout(() => {
@@ -74,7 +78,7 @@ function main() {
   //       luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
   //       luckyItem.onSale = true;
   //       alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-  //       onUpdateSelectOptions();
+  //       renderProductOptions();
   //       doUpdatePricesInCart();
   //     }
   //   }, 30000);
@@ -97,92 +101,12 @@ function main() {
   //         alert('💝 ' + suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
   //         suggest.val = Math.round((suggest.val * (100 - 5)) / 100);
   //         suggest.suggestSale = true;
-  //         onUpdateSelectOptions();
+  //         renderProductOptions();
   //         doUpdatePricesInCart();
   //       }
   //     }
   //   }, 60000);
   // }, suggestSaleDelay);
-
-  // 상품 셀렉트 옵션 업데이트
-  function onUpdateSelectOptions() {
-    let totalStock = 0;
-
-    productSelectDropdown.innerHTML = '';
-
-    function getSaleText(item) {
-      let saleText = '';
-
-      if (item.onSale) saleText += ' ⚡SALE';
-
-      if (item.suggestSale) saleText += ' 💝추천';
-
-      return saleText;
-    }
-
-    // 상품 표시 정보 생성 함수
-    function getProductDisplayInfo(item) {
-      const { name, val, originalVal, onSale, suggestSale } = item;
-
-      // 세일 조합에 따른 처리
-      if (onSale && suggestSale) {
-        return {
-          text: `⚡💝${name} - ${originalVal}원 → ${val}원 (25% SUPER SALE!)`,
-          className: 'text-purple-600 font-bold',
-        };
-      }
-
-      if (onSale) {
-        return {
-          text: `⚡${name} - ${originalVal}원 → ${val}원 (20% SALE!)`,
-          className: 'text-red-500 font-bold',
-        };
-      }
-
-      if (suggestSale) {
-        return {
-          text: `💝${name} - ${originalVal}원 → ${val}원 (5% 추천할인!)`,
-          className: 'text-blue-500 font-bold',
-        };
-      }
-
-      // 일반 상품
-      return {
-        text: `${name} - ${val}원${getSaleText(item)}`,
-        className: '',
-      };
-    }
-
-    // 총 재고 계산
-    for (let idx = 0; idx < products.length; idx++) {
-      totalStock += products[idx].q;
-    }
-
-    // 옵션 생성
-    products.forEach((item) => {
-      const option = document.createElement('option');
-
-      option.value = item.id;
-
-      // 품절 상품 처리
-      if (item.q === 0) {
-        option.textContent = `${item.name} - ${item.val}원 (품절)${getSaleText(item)}`;
-        option.disabled = true;
-        option.className = 'text-gray-400';
-      } else {
-        // 재고 있는 상품 처리
-        const { text, className } = getProductDisplayInfo(item);
-
-        option.textContent = text;
-        option.className = className;
-      }
-
-      productSelectDropdown.appendChild(option);
-    });
-
-    // 재고 부족 시 테두리 색상 변경
-    productSelectDropdown.style.borderColor = totalStock < 50 ? 'orange' : '';
-  }
 
   function handleCalculateCartStuff() {
     const cartItems = Array.from(cartItemsList.children);
@@ -206,7 +130,7 @@ function main() {
     updateAllUI(subTotal, finalTotal, itemDiscounts, discountRate, isTuesday);
 
     // 4. 추가 업데이트
-    handleStockInfoUpdate();
+    renderStockStatus();
     doRenderBonusPoints();
   }
 
@@ -526,15 +450,6 @@ function main() {
     ptsTag.style.display = 'block';
   }
 
-  function handleStockInfoUpdate() {
-    const infoMessages = products
-      .filter((item) => item.q < 5)
-      .map((item) => (item.q === 0 ? `${item.name}: 품절` : `${item.name}: 재고 부족 (${item.q}개 남음)`))
-      .join('\n');
-
-    stockStatusDisplay.textContent = infoMessages;
-  }
-
   function doUpdatePricesInCart() {
     const cartItems = Array.from(cartItemsList.children);
 
@@ -698,7 +613,7 @@ function main() {
 
     // UI 업데이트
     handleCalculateCartStuff();
-    onUpdateSelectOptions();
+    renderProductOptions();
   });
 
   // 수량 변경 처리
