@@ -48,7 +48,6 @@ export default defineConfig([
       'no-console': 'warn', // console.log 사용 경고 (운영환경 배포시 제거 필요)
       'no-var': 'error', // var 사용 금지 (let/const 사용 강제)
       'prefer-const': 'error', // 재할당 없는 변수는 const 사용 강제
-      'no-shadow': 'error', // 변수명 중복(섀도잉) 방지 (버그 예방)
 
       // === 코드 스타일 통일 ===
       eqeqeq: ['error', 'always'], // === 연산자 사용 강제 (타입 안전성)
