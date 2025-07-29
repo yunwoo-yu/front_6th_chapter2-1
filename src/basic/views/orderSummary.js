@@ -157,7 +157,7 @@ function renderCartItemDetails(summaryDetails) {
     if (!product) return;
 
     const qty = parseInt(cartItem.querySelector('.quantity-number').textContent);
-    const itemTotal = product.val * qty;
+    const itemTotal = product.discountPrice * qty;
 
     summaryDetails.innerHTML += `
       <div class="flex justify-between text-xs tracking-wide text-gray-400">

@@ -131,14 +131,14 @@ function buildCartItemDisplay(product) {
   if (!product.onSale && !product.suggestSale) {
     return {
       name: `${saleIcon}${product.name}`,
-      priceHTML: `₩${product.val.toLocaleString()}`,
+      priceHTML: `₩${product.discountPrice.toLocaleString()}`,
     };
   }
 
   const colorClass = getDiscountColorClass(product);
   return {
     name: `${saleIcon}${product.name}`,
-    priceHTML: `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="${colorClass}">₩${product.val.toLocaleString()}</span>`,
+    priceHTML: `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="${colorClass}">₩${product.discountPrice.toLocaleString()}</span>`,
   };
 }
 

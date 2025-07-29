@@ -72,7 +72,7 @@ function createProductOption(product) {
   if (product.q === 0) {
     const saleText = buildSaleText(product);
 
-    option.textContent = `${product.name} - ${product.val}원 (품절)${saleText}`;
+    option.textContent = `${product.name} - ${product.discountPrice}원 (품절)${saleText}`;
     option.disabled = true;
     option.className = 'text-gray-400';
   } else {
@@ -96,26 +96,26 @@ function buildSaleText(product) {
 }
 
 function buildProductDisplayInfo(product) {
-  const { name, val, originalVal, onSale, suggestSale } = product;
+  const { name, discountPrice, originalVal, onSale, suggestSale } = product;
 
   const saleText = buildSaleText(product);
 
   // 세일 조합별 표시 정보 매핑
   const saleDisplayMap = {
     both: {
-      text: `⚡💝${name} - ${originalVal}원 → ${val}원 (25% SUPER SALE!)`,
+      text: `⚡💝${name} - ${originalVal}원 → ${discountPrice}원 (25% SUPER SALE!)`,
       className: 'text-purple-600 font-bold',
     },
     lightning: {
-      text: `⚡${name} - ${originalVal}원 → ${val}원 (20% SALE!)`,
+      text: `⚡${name} - ${originalVal}원 → ${discountPrice}원 (20% SALE!)`,
       className: 'text-red-500 font-bold',
     },
     suggest: {
-      text: `💝${name} - ${originalVal}원 → ${val}원 (5% 추천할인!)`,
+      text: `💝${name} - ${originalVal}원 → ${discountPrice}원 (5% 추천할인!)`,
       className: 'text-blue-500 font-bold',
     },
     none: {
-      text: `${name} - ${val}원${saleText}`,
+      text: `${name} - ${discountPrice}원${saleText}`,
       className: '',
     },
   };

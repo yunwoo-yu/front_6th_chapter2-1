@@ -38,7 +38,7 @@ const extractCartItemData = (cartItem) => {
  * @returns {Object} { itemTotal, discountedTotal, hasDiscount, discountInfo }
  */
 const calculateSingleItemDiscount = (product, quantity) => {
-  const itemTotal = product.val * quantity;
+  const itemTotal = product.discountPrice * quantity;
   const hasItemDiscount = quantity >= QUANTITY_THRESHOLDS.ITEM_DISCOUNT && product.discountRate > 0;
 
   if (hasItemDiscount) {
