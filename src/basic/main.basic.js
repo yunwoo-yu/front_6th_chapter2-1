@@ -407,7 +407,7 @@ function main() {
     }
 
     // 화요일 할인
-    if (isTuesday && totalAmt > 0) {
+    if (isTuesday && finalTotalAmount > 0) {
       summaryDetails.innerHTML += `
       <div class="flex justify-between text-sm tracking-wide text-purple-400">
         <span class="text-xs">🌟 화요일 추가 할인</span>
