@@ -79,7 +79,7 @@ function main() {
   //     const luckyIdx = Math.floor(Math.random() * products.length);
   //     const luckyItem = products[luckyIdx];
   //     if (luckyItem.q > 0 && !luckyItem.onSale) {
-  //       luckyItem.val = Math.round((luckyItem.originalVal * (CALCULATION_CONSTANTS.DISCOUNT_CALCULATION - DISCOUNT_RATES.LIGHTNING_SALE_RATE)) / CALCULATION_CONSTANTS.PERCENTAGE_MULTIPLIER);
+  //       luckyItem.val = Math.round((luckyItem.price * (CALCULATION_CONSTANTS.DISCOUNT_CALCULATION - DISCOUNT_RATES.LIGHTNING_SALE_RATE)) / CALCULATION_CONSTANTS.PERCENTAGE_MULTIPLIER);
   //       luckyItem.onSale = true;
   //       alert(MESSAGES.LIGHTNING_SALE.replace('{productName}', luckyItem.name));
   //       renderProductOptions();
@@ -338,13 +338,13 @@ function main() {
       const nameDiv = cartItem.querySelector('h3');
 
       if (product.onSale && product.suggestSale) {
-        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="text-purple-600">₩${product.discountPrice.toLocaleString()}</span>`;
+        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.price.toLocaleString()}</span> <span class="text-purple-600">₩${product.discountPrice.toLocaleString()}</span>`;
         nameDiv.textContent = `⚡💝${product.name}`;
       } else if (product.onSale) {
-        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="text-red-500">₩${product.discountPrice.toLocaleString()}</span>`;
+        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.price.toLocaleString()}</span> <span class="text-red-500">₩${product.discountPrice.toLocaleString()}</span>`;
         nameDiv.textContent = `⚡${product.name}`;
       } else if (product.suggestSale) {
-        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="text-blue-500">₩${product.discountPrice.toLocaleString()}</span>`;
+        priceDiv.innerHTML = `<span class="line-through text-gray-400">₩${product.price.toLocaleString()}</span> <span class="text-blue-500">₩${product.discountPrice.toLocaleString()}</span>`;
         nameDiv.textContent = `💝${product.name}`;
       } else {
         priceDiv.textContent = `₩${product.discountPrice.toLocaleString()}`;
@@ -452,7 +452,7 @@ function main() {
     }
 
     const colorClass = getDiscountColorClass(product);
-    return `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="${colorClass}">₩${product.discountPrice.toLocaleString()}</span>`;
+    return `<span class="line-through text-gray-400">₩${product.price.toLocaleString()}</span> <span class="${colorClass}">₩${product.discountPrice.toLocaleString()}</span>`;
   }
 
   // 할인 색상 클래스 반환

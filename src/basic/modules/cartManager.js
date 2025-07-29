@@ -138,7 +138,7 @@ function buildCartItemDisplay(product) {
   const colorClass = getDiscountColorClass(product);
   return {
     name: `${saleIcon}${product.name}`,
-    priceHTML: `<span class="line-through text-gray-400">₩${product.originalVal.toLocaleString()}</span> <span class="${colorClass}">₩${product.discountPrice.toLocaleString()}</span>`,
+    priceHTML: `<span class="line-through text-gray-400">₩${product.price.toLocaleString()}</span> <span class="${colorClass}">₩${product.discountPrice.toLocaleString()}</span>`,
   };
 }
 
