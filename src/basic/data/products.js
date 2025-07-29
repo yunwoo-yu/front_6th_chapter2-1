@@ -1,6 +1,14 @@
+export const PRODUCT_ID = {
+  KEYBOARD: 'p1',
+  MOUSE: 'p2',
+  MONITOR_ARM: 'p3',
+  NOTEBOOK_POUCH: 'p4',
+  LO_FI_SPEAKER: 'p5',
+};
+
 export const products = [
   {
-    id: 'p1',
+    id: PRODUCT_ID.KEYBOARD,
     name: '버그 없애는 키보드',
     val: 10000,
     originalVal: 10000,
@@ -9,7 +17,7 @@ export const products = [
     suggestSale: false,
   },
   {
-    id: 'p2',
+    id: PRODUCT_ID.MOUSE,
     name: '생산성 폭발 마우스',
     val: 20000,
     originalVal: 20000,
@@ -18,7 +26,7 @@ export const products = [
     suggestSale: false,
   },
   {
-    id: 'p3',
+    id: PRODUCT_ID.MONITOR_ARM,
     name: '거북목 탈출 모니터암',
     val: 30000,
     originalVal: 30000,
@@ -27,7 +35,7 @@ export const products = [
     suggestSale: false,
   },
   {
-    id: 'p4',
+    id: PRODUCT_ID.NOTEBOOK_POUCH,
     name: '에러 방지 노트북 파우치',
     val: 15000,
     originalVal: 15000,
@@ -36,7 +44,7 @@ export const products = [
     suggestSale: false,
   },
   {
-    id: 'p5',
+    id: PRODUCT_ID.LO_FI_SPEAKER,
     name: '코딩할 때 듣는 Lo-Fi 스피커',
     val: 25000,
     originalVal: 25000,
