@@ -1,5 +1,5 @@
 import { PRODUCT_IDS, products } from './data';
-import { initProductElements, renderProductOptions, renderStockStatus } from './modules/productManager.js';
+import { initProductElements, renderProductOptions, renderStockStatus } from './modules';
 import {
   createAddToCartButton,
   createCartList,
