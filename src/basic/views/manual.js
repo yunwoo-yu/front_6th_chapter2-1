@@ -1,11 +1,14 @@
-const MANUAL_TOGGLE_BUTTON_CLASSES =
-  'fixed top-4 right-4 bg-black text-white p-3 rounded-full hover:bg-gray-900 transition-colors z-50';
-const MANUAL_OVERLAY_CLASSES = 'fixed inset-0 bg-black/50 z-40 hidden transition-opacity duration-300';
-const MANUAL_COLUMN_CLASSES =
-  'fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 overflow-y-auto z-50 transform translate-x-full transition-transform duration-300';
+/**
+ * Manual 컴포넌트
+ * 이용 안내 모달을 표시
+ */
 
-function createManualToggleButtonHTML() {
-  return /* HTML */ `
+/**
+ * Manual 토글 버튼 HTML 렌더링
+ * @returns {string} Manual 토글 버튼 HTML
+ */
+function renderManualToggleButton() {
+  return `
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         stroke-linecap="round"
@@ -17,8 +20,12 @@ function createManualToggleButtonHTML() {
   `;
 }
 
-function createManualColumnHTML() {
-  return /* HTML */ `
+/**
+ * Manual 패널 HTML 렌더링
+ * @returns {string} Manual 패널 HTML
+ */
+function renderManualPanel() {
+  return `
     <button
       class="absolute top-4 right-4 text-gray-500 hover:text-black"
       onclick="document.querySelector('.fixed.inset-0').classList.add('hidden'); this.parentElement.classList.add('translate-x-full')"
@@ -83,28 +90,68 @@ function createManualColumnHTML() {
   `;
 }
 
-export function createManualColumn() {
-  const manualColumn = document.createElement('div');
+/**
+ * Manual 토글 버튼 생성
+ * @returns {HTMLElement} Manual 토글 버튼
+ */
+export function createManualToggleButton() {
+  const manualToggleButton = document.createElement('button');
 
-  manualColumn.className = MANUAL_COLUMN_CLASSES;
-  manualColumn.innerHTML = createManualColumnHTML();
+  manualToggleButton.className =
+    'fixed top-4 right-4 bg-black text-white p-3 rounded-full hover:bg-gray-900 transition-colors z-50';
+  manualToggleButton.innerHTML = renderManualToggleButton();
 
-  return manualColumn;
+  return manualToggleButton;
 }
 
+/**
+ * Manual 오버레이 생성
+ * @returns {HTMLElement} Manual 오버레이
+ */
 export function createManualOverlay() {
   const manualOverlay = document.createElement('div');
 
-  manualOverlay.className = MANUAL_OVERLAY_CLASSES;
+  manualOverlay.className = 'fixed inset-0 bg-black/50 z-40 hidden transition-opacity duration-300';
 
   return manualOverlay;
 }
 
-export function createManualToggleButton() {
-  const manualToggleButton = document.createElement('button');
+/**
+ * Manual 패널 생성
+ * @returns {HTMLElement} Manual 패널
+ */
+export function createManualPanel() {
+  const manualPanel = document.createElement('div');
 
-  manualToggleButton.className = MANUAL_TOGGLE_BUTTON_CLASSES;
-  manualToggleButton.innerHTML = createManualToggleButtonHTML();
+  manualPanel.className =
+    'fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 overflow-y-auto z-50 transform translate-x-full transition-transform duration-300';
+  manualPanel.innerHTML = renderManualPanel();
 
-  return manualToggleButton;
+  return manualPanel;
+}
+
+/**
+ * Manual 모달 토글
+ */
+export function toggleManualModal() {
+  const overlay = document.querySelector('.fixed.inset-0');
+  const panel = document.querySelector('.fixed.right-0.top-0');
+
+  if (overlay && panel) {
+    overlay.classList.toggle('hidden');
+    panel.classList.toggle('translate-x-full');
+  }
+}
+
+/**
+ * Manual 모달 닫기
+ */
+export function closeManualModal() {
+  const overlay = document.querySelector('.fixed.inset-0');
+  const panel = document.querySelector('.fixed.right-0.top-0');
+
+  if (overlay && panel) {
+    overlay.classList.add('hidden');
+    panel.classList.add('translate-x-full');
+  }
 }

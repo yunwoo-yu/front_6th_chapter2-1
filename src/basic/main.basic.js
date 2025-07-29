@@ -4,42 +4,41 @@ import {
   CALCULATION_CONSTANTS,
   DISCOUNT_RATES,
   isTuesday,
-  MESSAGES,
   POINT_RATES,
   PRODUCT_COMBOS,
   QUANTITY_THRESHOLDS,
   TIME_DELAYS,
 } from './utils';
 import {
-  createAddToCartButton,
-  createCartList,
-  createLeftColumn,
+  closeManualModal,
+  createHeader,
   createMainContainer,
-  createManualColumn,
   createManualOverlay,
+  createManualPanel,
   createManualToggleButton,
-  createProductSelectElement,
-  createRightColumn,
-  createSelectorContainer,
-  createShoppingCartHeader,
-  createStockInfoDisplay,
+  createOrderSummary,
+  createProductSelection,
+  resetHeader,
+  resetOrderSummary,
+  toggleManualModal,
+  updateDiscountInfo,
+  updateItemCount,
+  updateLoyaltyPoints,
+  updateSummaryDetails,
+  updateTotalAmount,
+  updateTuesdaySpecial,
 } from './views';
 
 function main() {
   const root = document.getElementById('app');
-  const cartHeader = createShoppingCartHeader();
-  const productSelectionPanel = createLeftColumn();
+  const cartHeader = createHeader();
+  const productSelectionPanel = createProductSelection();
   const shoppingAreaContainer = createMainContainer();
-  const productSelectorContainer = createSelectorContainer();
-  const productSelectDropdown = createProductSelectElement();
-  const addToCartButton = createAddToCartButton();
-  const stockStatusDisplay = createStockInfoDisplay();
-  const cartItemsList = createCartList();
-  const orderSummaryPanel = createRightColumn();
+  const orderSummaryPanel = createOrderSummary();
 
   const helpToggleButton = createManualToggleButton();
   const helpModalOverlay = createManualOverlay();
-  const helpModalPanel = createManualColumn();
+  const helpModalPanel = createManualPanel();
 
   const lightningSaleDelay = Math.random() * TIME_DELAYS.LIGHTNING_SALE_MAX;
   const suggestSaleDelay = Math.random() * TIME_DELAYS.SUGGEST_SALE_MAX;
@@ -49,13 +48,12 @@ function main() {
   let finalTotalAmount = 0;
 
   // Initialize ProductManager
+  const productSelectDropdown = productSelectionPanel.querySelector('#product-select');
+  const stockStatusDisplay = productSelectionPanel.querySelector('#stock-status');
+  const cartItemsList = productSelectionPanel.querySelector('#cart-items');
+
   initProductElements(productSelectDropdown, stockStatusDisplay);
 
-  productSelectorContainer.appendChild(productSelectDropdown);
-  productSelectorContainer.appendChild(addToCartButton);
-  productSelectorContainer.appendChild(stockStatusDisplay);
-  productSelectionPanel.appendChild(productSelectorContainer);
-  productSelectionPanel.appendChild(cartItemsList);
   shoppingAreaContainer.appendChild(productSelectionPanel);
   shoppingAreaContainer.appendChild(orderSummaryPanel);
   helpModalOverlay.appendChild(helpModalPanel);
@@ -65,15 +63,11 @@ function main() {
   root.appendChild(helpToggleButton);
   root.appendChild(helpModalOverlay);
 
-  helpToggleButton.onclick = () => {
-    helpModalOverlay.classList.toggle('hidden');
-    helpModalPanel.classList.toggle('translate-x-full');
-  };
+  helpToggleButton.onclick = toggleManualModal;
 
   helpModalOverlay.onclick = (e) => {
     if (e.target === helpModalOverlay) {
-      helpModalOverlay.classList.add('hidden');
-      helpModalPanel.classList.add('translate-x-full');
+      closeManualModal();
     }
   };
 
@@ -218,180 +212,48 @@ function main() {
 
   // 모든 UI 업데이트
   function updateAllUI(subTotal, finalTotal, itemDiscounts, discountRate, isTuesday) {
-    updateItemCount();
-    updateTotalAmount(finalTotal);
-    updateTuesdaySpecial(isTuesday, finalTotal);
-    updateSummaryDetails(subTotal, itemDiscounts, isTuesday);
-    updateDiscountInfo(discountRate, finalTotal, subTotal);
-    updateLoyaltyPoints(finalTotal);
+    updateItemCountDisplay();
+    updateTotalAmountDisplay(finalTotal);
+    updateTuesdaySpecialDisplay(isTuesday, finalTotal);
+    updateSummaryDetailsDisplay(subTotal, itemDiscounts, isTuesday);
+    updateDiscountInfoDisplay(discountRate, finalTotal, subTotal);
+    updateLoyaltyPointsDisplay(finalTotal);
   }
 
   // 아이템 수량 업데이트
-  function updateItemCount() {
-    const itemCountElement = document.getElementById('item-count');
-
-    if (itemCountElement) {
-      const previousCount = parseInt(itemCountElement.textContent.match(/\d+/) || [0])[0];
-
-      itemCountElement.textContent = `🛍️ ${totalItemCount} items in cart`;
-
-      if (previousCount !== totalItemCount) {
-        itemCountElement.setAttribute('data-changed', 'true');
-      }
-    }
+  function updateItemCountDisplay() {
+    updateItemCount(totalItemCount);
   }
 
   // 총액 업데이트
-  function updateTotalAmount(finalTotal) {
-    const totalDiv = orderSummaryPanel.querySelector('.text-2xl');
-
-    if (totalDiv) {
-      totalDiv.textContent = `₩${Math.round(finalTotal).toLocaleString()}`;
-    }
+  function updateTotalAmountDisplay(finalTotal) {
+    updateTotalAmount(finalTotal);
   }
 
   // 화요일 특가 표시 업데이트
-  function updateTuesdaySpecial(isTuesday, finalTotal) {
-    const tuesdaySpecial = document.getElementById('tuesday-special');
-
-    if (isTuesday && finalTotal > 0) {
-      tuesdaySpecial.classList.remove('hidden');
-    } else {
-      tuesdaySpecial.classList.add('hidden');
-    }
+  function updateTuesdaySpecialDisplay(isTuesday, finalTotal) {
+    updateTuesdaySpecial(isTuesday, finalTotal);
   }
 
   // 적립 포인트 업데이트
-  function updateLoyaltyPoints(finalTotal) {
-    const loyaltyPointsDiv = document.getElementById('loyalty-points');
-
-    if (loyaltyPointsDiv) {
-      const points = Math.floor(finalTotal / CALCULATION_CONSTANTS.POINT_BASE_AMOUNT);
-
-      loyaltyPointsDiv.textContent =
-        points > 0 ? MESSAGES.LOYALTY_POINTS.replace('{points}', points) : MESSAGES.ZERO_POINTS;
-      loyaltyPointsDiv.style.display = 'block';
-    }
+  function updateLoyaltyPointsDisplay(finalTotal) {
+    updateLoyaltyPoints(finalTotal);
   }
 
-  // 상세 내역 업데이트
-  function updateSummaryDetails(subTotal, itemDiscounts, isTuesday) {
-    const summaryDetails = document.getElementById('summary-details');
-
-    summaryDetails.innerHTML = '';
-
-    if (subTotal === 0) return;
-
-    // 각 아이템 표시
-    renderCartItemDetails(summaryDetails);
-
-    // 소계 표시
-    summaryDetails.innerHTML += `
-    <div class="border-t border-white/10 my-3"></div>
-    <div class="flex justify-between text-sm tracking-wide">
-      <span>Subtotal</span>
-      <span>₩${subTotal.toLocaleString()}</span>
-    </div>
-  `;
-
-    // 할인 표시
-    renderDiscountDetails(summaryDetails, itemDiscounts, isTuesday);
-
-    // 무료 배송
-    summaryDetails.innerHTML += `
-    <div class="flex justify-between text-sm tracking-wide text-gray-400">
-      <span>Shipping</span>
-      <span>Free</span>
-    </div>
-  `;
+  // 상세 내역 업데이트 (views 함수 호출)
+  function updateSummaryDetailsDisplay(subTotal, itemDiscounts, isTuesday) {
+    updateSummaryDetails(subTotal, itemDiscounts, isTuesday);
   }
 
-  // 장바구니 아이템 상세 렌더링
-  function renderCartItemDetails(summaryDetails) {
-    Array.from(cartItemsList.children).forEach((cartItem) => {
-      const product = products.find((p) => p.id === cartItem.id);
-      if (!product) return;
-
-      const qty = parseInt(cartItem.querySelector('.quantity-number').textContent);
-      const itemTotal = product.val * qty;
-
-      summaryDetails.innerHTML += `
-      <div class="flex justify-between text-xs tracking-wide text-gray-400">
-        <span>${product.name} x ${qty}</span>
-        <span>₩${itemTotal.toLocaleString()}</span>
-      </div>
-    `;
-    });
-  }
-
-  // 할인 상세 렌더링
-  function renderDiscountDetails(summaryDetails, itemDiscounts, isTuesday) {
-    // 대량구매 할인
-    if (totalItemCount >= QUANTITY_THRESHOLDS.BULK_PURCHASE) {
-      summaryDetails.innerHTML += `
-      <div class="flex justify-between text-sm tracking-wide text-green-400">
-        <span class="text-xs">🎉 대량구매 할인 (${QUANTITY_THRESHOLDS.BULK_PURCHASE}개 이상)</span>
-        <span class="text-xs">-${DISCOUNT_RATES.BULK_PURCHASE_RATE * CALCULATION_CONSTANTS.PERCENTAGE_MULTIPLIER}%</span>
-      </div>
-    `;
-    } else if (itemDiscounts.length > 0) {
-      // 개별 상품 할인
-      itemDiscounts.forEach((item) => {
-        summaryDetails.innerHTML += `
-        <div class="flex justify-between text-sm tracking-wide text-green-400">
-          <span class="text-xs">${item.name} (${QUANTITY_THRESHOLDS.ITEM_DISCOUNT}개↑)</span>
-          <span class="text-xs">-${item.discount}%</span>
-        </div>
-      `;
-      });
-    }
-
-    // 화요일 할인
-    if (isTuesday && finalTotalAmount > 0) {
-      summaryDetails.innerHTML += `
-      <div class="flex justify-between text-sm tracking-wide text-purple-400">
-        <span class="text-xs">🌟 화요일 추가 할인</span>
-        <span class="text-xs">-10%</span>
-      </div>
-    `;
-    }
-  }
-
-  // 할인 정보 업데이트
-  function updateDiscountInfo(discountRate, finalTotal, subTotal) {
-    const discountInfoDiv = document.getElementById('discount-info');
-    discountInfoDiv.innerHTML = '';
-
-    if (discountRate > 0 && finalTotal > 0) {
-      const savedAmount = subTotal - finalTotal;
-      discountInfoDiv.innerHTML = `
-      <div class="bg-green-500/20 rounded-lg p-3">
-        <div class="flex justify-between items-center mb-1">
-          <span class="text-xs uppercase tracking-wide text-green-400">총 할인율</span>
-          <span class="text-sm font-medium text-green-400">${(discountRate * 100).toFixed(1)}%</span>
-        </div>
-        <div class="text-2xs text-gray-300">₩${Math.round(savedAmount).toLocaleString()} 할인되었습니다</div>
-      </div>
-    `;
-    }
+  // 할인 정보 업데이트 (views 함수 호출)
+  function updateDiscountInfoDisplay(discountRate, finalTotal, subTotal) {
+    updateDiscountInfo(discountRate, finalTotal, subTotal);
   }
 
   // 장바구니 비움 시 초기화
   function resetCartDisplay() {
-    document.getElementById('item-count').textContent = '🛍️ 0 items in cart';
-    document.getElementById('summary-details').innerHTML = '';
-    document.getElementById('discount-info').innerHTML = '';
-    document.getElementById('tuesday-special').classList.add('hidden');
-
-    const totalDiv = orderSummaryPanel.querySelector('.text-2xl');
-    if (totalDiv) {
-      totalDiv.textContent = '₩0';
-    }
-
-    const loyaltyPointsDiv = document.getElementById('loyalty-points');
-    if (loyaltyPointsDiv) {
-      loyaltyPointsDiv.style.display = 'none';
-    }
+    resetHeader();
+    resetOrderSummary();
   }
 
   function doRenderBonusPoints() {
@@ -493,6 +355,7 @@ function main() {
     handleCalculateCartStuff();
   }
 
+  const addToCartButton = productSelectionPanel.querySelector('#add-to-cart');
   addToCartButton.addEventListener('click', function () {
     const selectedItemId = productSelectDropdown.value;
 
