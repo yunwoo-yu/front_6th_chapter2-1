@@ -48,6 +48,8 @@ export default defineConfig([
       'no-console': 'warn', // console.log 사용 경고 (운영환경 배포시 제거 필요)
       'no-var': 'error', // var 사용 금지 (let/const 사용 강제)
       'prefer-const': 'error', // 재할당 없는 변수는 const 사용 강제
+      'react/react-in-jsx-scope': 'off', // React 17 이상에서는 필요 없음
+      'react/jsx-uses-react': 'off', // React 17 이상에서는 필요 없음
 
       // === 코드 스타일 통일 ===
       eqeqeq: ['error', 'always'], // === 연산자 사용 강제 (타입 안전성)
