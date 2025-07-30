@@ -3,8 +3,8 @@
  * 주문 요약, 할인 정보, 포인트 정보를 표시
  */
 
-import { products } from '../data/products.js';
-import { CALCULATION_CONSTANTS, DISCOUNT_RATES, QUANTITY_THRESHOLDS } from '../utils/constants.js';
+import { products } from '../data';
+import { CALCULATION_CONSTANTS, DISCOUNT_RATES, QUANTITY_THRESHOLDS } from '../utils';
 
 /**
  * OrderSummary HTML 렌더링
@@ -156,12 +156,12 @@ function renderCartItemDetails(summaryDetails) {
 
     if (!product) return;
 
-    const qty = parseInt(cartItem.querySelector('.quantity-number').textContent);
-    const itemTotal = product.discountPrice * qty;
+    const quantity = parseInt(cartItem.querySelector('.quantity-number').textContent);
+    const itemTotal = product.discountPrice * quantity;
 
     summaryDetails.innerHTML += `
       <div class="flex justify-between text-xs tracking-wide text-gray-400">
-        <span>${product.name} x ${qty}</span>
+        <span>${product.name} x ${quantity}</span>
         <span>₩${itemTotal.toLocaleString()}</span>
       </div>
     `;

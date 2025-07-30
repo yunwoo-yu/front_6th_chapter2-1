@@ -17,6 +17,7 @@ export function createHeader() {
 
 export function updateItemCount(totalItemCount) {
   const itemCountElement = document.getElementById('item-count');
+
   if (itemCountElement) {
     itemCountElement.textContent = `🛍️ ${totalItemCount} items in cart`;
   }
@@ -24,6 +25,7 @@ export function updateItemCount(totalItemCount) {
 
 export function resetHeader() {
   const itemCountElement = document.getElementById('item-count');
+
   if (itemCountElement) {
     itemCountElement.textContent = '🛍️ 0 items in cart';
   }

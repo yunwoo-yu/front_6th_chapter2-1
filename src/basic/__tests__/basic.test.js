@@ -23,8 +23,8 @@ describe('basic 테스트', () => {
   const getCartItemQuantity = (cartDisp, productId) => {
     const item = cartDisp.querySelector(`#${productId}`);
     if (!item) return 0;
-    const qtyElement = item.querySelector('.quantity-number');
-    return qtyElement ? parseInt(qtyElement.textContent) : 0;
+    const quantityElement = item.querySelector('.quantity-number');
+    return quantityElement ? parseInt(quantityElement.textContent) : 0;
   };
 
   describe.each([
@@ -431,8 +431,8 @@ describe('basic 테스트', () => {
           addBtn.click();
 
           expect(cartDisp.children.length).toBe(1);
-          const qty = cartDisp.querySelector('.quantity-number').textContent;
-          expect(qty).toBe('2');
+          const quantity = cartDisp.querySelector('.quantity-number').textContent;
+          expect(quantity).toBe('2');
         });
 
         it('재고 초과 시 알림 표시', () => {
@@ -440,8 +440,8 @@ describe('basic 테스트', () => {
           addItemsToCart(sel, addBtn, 'p5', 11);
 
           // 장바구니에는 10개만 있어야 함
-          const qty = getCartItemQuantity(cartDisp, 'p5');
-          expect(qty).toBeLessThanOrEqual(10);
+          const quantity = getCartItemQuantity(cartDisp, 'p5');
+          expect(quantity).toBeLessThanOrEqual(10);
         });
 
         it('품절 상품은 선택 불가', () => {
@@ -578,8 +578,8 @@ describe('basic 테스트', () => {
           addItemsToCart(sel, addBtn, 'p5', 11);
 
           // 장바구니에는 최대 재고 수량만큼만 담김
-          const qty = getCartItemQuantity(cartDisp, 'p5');
-          expect(qty).toBeLessThanOrEqual(10);
+          const quantity = getCartItemQuantity(cartDisp, 'p5');
+          expect(quantity).toBeLessThanOrEqual(10);
         });
 
         it('수량 증가 시 재고 확인', async () => {

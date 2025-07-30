@@ -12,6 +12,7 @@ export function renderProductOptions() {
   if (!selectDropdownElement) return;
 
   selectDropdownElement.innerHTML = '';
+
   const totalStockCount = products.reduce((total, product) => total + product.quantity, 0);
 
   products.forEach((product) => {
@@ -40,30 +41,30 @@ export function findProductById(productId) {
   return products.find((product) => product.id === productId);
 }
 
-export function removeStock(productId, qty = 1) {
+export function removeStock(productId, quantity = 1) {
   const product = findProductById(productId);
 
-  if (!product || product.quantity < qty) return false;
+  if (!product || product.quantity < quantity) return false;
 
-  product.quantity -= qty;
+  product.quantity -= quantity;
 
   return true;
 }
 
-export function addStock(productId, qty = 1) {
+export function addStock(productId, quantity = 1) {
   const product = findProductById(productId);
 
   if (!product) return false;
 
-  product.quantity += qty;
+  product.quantity += quantity;
 
   return true;
 }
 
-export function validateStock(productId, requestedQty) {
+export function validateStock(productId, requestedQuantity) {
   const product = findProductById(productId);
 
-  return product ? product.quantity >= requestedQty : false;
+  return product ? product.quantity >= requestedQuantity : false;
 }
 
 function createProductOption(product) {
