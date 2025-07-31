@@ -15,6 +15,7 @@ export const renderPriceWithDiscountStyle = (product: Product) => {
       </>
     );
   }
+
   return `₩${product.discountPrice.toLocaleString()}`;
 };
 
@@ -23,8 +24,11 @@ export const renderPriceWithDiscountStyle = (product: Product) => {
  */
 export const getSaleTypeIcon = (product: Product): string => {
   if (product.onSale && product.suggestSale) return '⚡💝';
+
   if (product.onSale) return '⚡';
+
   if (product.suggestSale) return '💝';
+
   return '';
 };
 
@@ -40,7 +44,10 @@ export const getCurrentSellingPrice = (product: Product): number => {
  */
 const getDiscountColorClass = (product: Product): string => {
   if (product.onSale && product.suggestSale) return 'text-purple-600';
+
   if (product.onSale) return 'text-red-500';
+
   if (product.suggestSale) return 'text-blue-500';
+
   return '';
 };
