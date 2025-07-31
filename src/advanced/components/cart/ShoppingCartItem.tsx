@@ -1,5 +1,5 @@
 import { Product } from '@/lib/products';
-import { getPriceDisplay, getSaleIcon } from '@/utils/priceUtils';
+import { getSaleTypeIcon, renderPriceWithDiscountStyle } from '@/utils/priceUtils';
 
 interface ShoppingCartItemProps {
   product: Product;
@@ -8,8 +8,8 @@ interface ShoppingCartItemProps {
 }
 
 const ShoppingCartItem = ({ product, handleQuantityChange, handleRemove }: ShoppingCartItemProps) => {
-  // 10개 이상일 때 볼드 처리
-  const shouldBeBold = product.quantity >= 10;
+  // 개별 할인 대상 수량 (10개 이상)일 때 볼드 처리
+  const isEligibleForItemDiscount = product.quantity >= 10;
 
   return (
     <div className="grid grid-cols-[80px_1fr_auto] gap-5 py-5 border-b border-gray-100 first:pt-0 last:border-b-0 last:pb-0">
@@ -18,11 +18,13 @@ const ShoppingCartItem = ({ product, handleQuantityChange, handleRemove }: Shopp
       </div>
       <div>
         <h3 className="text-base font-normal mb-1 tracking-tight">
-          {getSaleIcon(product)}
+          {getSaleTypeIcon(product)}
           {product.name}
         </h3>
         <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
-        <p className={`text-xs text-black mb-3 ${shouldBeBold ? 'font-bold' : ''}`}>{getPriceDisplay(product)}</p>
+        <p className={`text-xs text-black mb-3 ${isEligibleForItemDiscount ? 'font-bold' : ''}`}>
+          {renderPriceWithDiscountStyle(product)}
+        </p>
         <div className="flex items-center gap-4">
           <button
             onClick={() => handleQuantityChange(product.id, -1)}
@@ -40,8 +42,8 @@ const ShoppingCartItem = ({ product, handleQuantityChange, handleRemove }: Shopp
         </div>
       </div>
       <div className="text-right">
-        <div className={`text-lg mb-2 tracking-tight tabular-nums ${shouldBeBold ? 'font-bold' : ''}`}>
-          {getPriceDisplay(product)}
+        <div className={`text-lg mb-2 tracking-tight tabular-nums ${isEligibleForItemDiscount ? 'font-bold' : ''}`}>
+          {renderPriceWithDiscountStyle(product)}
         </div>
         <button
           onClick={() => handleRemove(product.id)}
