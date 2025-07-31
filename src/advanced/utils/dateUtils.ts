@@ -16,9 +16,7 @@ export const WEEKDAYS = {
  * 오늘이 화요일인지 확인
  */
 export const isTuesday = (): boolean => {
-  return true;
-
-  // return new Date().getDay() === WEEKDAYS.TUESDAY;
+  return new Date().getDay() === WEEKDAYS.TUESDAY;
 };
 
 /**
