@@ -1,14 +1,20 @@
 import { useState } from 'react';
 
-import { Product, PRODUCTS } from '@/lib/products';
-
-import { isProductOutOfStock } from '../utils/stockUtils';
+import { useProducts } from '@/hooks/useProducts';
+import { useSaleEvents } from '@/hooks/useSaleEvents';
+import { Product } from '@/lib/products';
+import { isProductOutOfStock } from '@/utils/stockUtils';
 
 export const useCart = () => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  const [lastSelectedProductId, setLastSelectedProductId] = useState<string | null>(null);
+  const { products, updateProduct, getProduct } = useProducts();
+
+  // 세일 이벤트 시작
+  useSaleEvents({ products, updateProduct, lastSelectedProductId });
 
   const handleAddToCartProduct = (productId: string) => {
-    const product = PRODUCTS.find((item) => item.id === productId);
+    const product = getProduct(productId);
 
     if (!product) return;
 
@@ -21,10 +27,12 @@ export const useCart = () => {
         ? prevProducts.map((item) => (item.id === productId ? { ...item, quantity: item.quantity + 1 } : item))
         : [...prevProducts, { ...product, quantity: 1 }];
     });
+
+    setLastSelectedProductId(productId);
   };
 
   const handleQuantityChange = (productId: string, change: number) => {
-    const product = PRODUCTS.find((item) => item.id === productId);
+    const product = getProduct(productId);
 
     if (!product) return;
 
@@ -48,6 +56,7 @@ export const useCart = () => {
 
   return {
     selectedProducts,
+    products,
     handleAddToCartProduct,
     handleQuantityChange,
     handleRemoveItem,

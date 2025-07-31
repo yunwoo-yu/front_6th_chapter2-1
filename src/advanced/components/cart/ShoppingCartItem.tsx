@@ -1,4 +1,5 @@
 import { Product } from '@/lib/products';
+import { getPriceDisplay, getSaleIcon } from '@/utils/priceUtils';
 
 interface ShoppingCartItemProps {
   product: Product;
@@ -7,15 +8,21 @@ interface ShoppingCartItemProps {
 }
 
 const ShoppingCartItem = ({ product, handleQuantityChange, handleRemove }: ShoppingCartItemProps) => {
+  // 10개 이상일 때 볼드 처리
+  const shouldBeBold = product.quantity >= 10;
+
   return (
     <div className="grid grid-cols-[80px_1fr_auto] gap-5 py-5 border-b border-gray-100 first:pt-0 last:border-b-0 last:pb-0">
       <div className="w-20 h-20 bg-gradient-black relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-white/10 -translate-x-1/2 -translate-y-1/2 rotate-45" />
       </div>
       <div>
-        <h3 className="text-base font-normal mb-1 tracking-tight">{product.name}</h3>
+        <h3 className="text-base font-normal mb-1 tracking-tight">
+          {getSaleIcon(product)}
+          {product.name}
+        </h3>
         <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
-        <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
+        <p className={`text-xs text-black mb-3 ${shouldBeBold ? 'font-bold' : ''}`}>{getPriceDisplay(product)}</p>
         <div className="flex items-center gap-4">
           <button
             onClick={() => handleQuantityChange(product.id, -1)}
@@ -33,13 +40,8 @@ const ShoppingCartItem = ({ product, handleQuantityChange, handleRemove }: Shopp
         </div>
       </div>
       <div className="text-right">
-        <div className="text-lg mb-2 tracking-tight tabular-nums">
-          <span>₩{product.price.toLocaleString()}</span>
-          {/* 나중에 할인 로직 추가, 이때 할인은 추천아이템 할인, 타임 할인이 있음 */}
-          {/* <span className="line-through text-gray-400">₩{product.price}</span> */}
-          {/* {product.price !== product.discountPrice && (
-            <span className="text-purple-600">₩{product.discountPrice}</span>
-          )} */}
+        <div className={`text-lg mb-2 tracking-tight tabular-nums ${shouldBeBold ? 'font-bold' : ''}`}>
+          {getPriceDisplay(product)}
         </div>
         <button
           onClick={() => handleRemove(product.id)}

@@ -6,7 +6,7 @@ import OrderSummary from './components/order/OrderSummary';
 import { useCart } from './hooks/useCart';
 
 export default function App() {
-  const { selectedProducts, handleAddToCartProduct, handleQuantityChange, handleRemoveItem } = useCart();
+  const { selectedProducts, products, handleAddToCartProduct, handleQuantityChange, handleRemoveItem } = useCart();
 
   return (
     <>
@@ -15,6 +15,7 @@ export default function App() {
       <Layout>
         <ShoppingCart
           selectedProducts={selectedProducts}
+          products={products}
           handleAddToCartProduct={handleAddToCartProduct}
           handleQuantityChange={handleQuantityChange}
           handleRemoveItem={handleRemoveItem}

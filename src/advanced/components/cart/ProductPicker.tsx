@@ -1,28 +1,32 @@
 import { useState } from 'react';
 
-import { Product, PRODUCTS } from '../../lib/products';
-import { createStockStatusMessage, getRemainingStock, isProductOutOfStock } from '../../utils/stockUtils';
+import { Product } from '@/lib/products';
+import { getDisplayPrice, getSaleIcon } from '@/utils/priceUtils';
+import { createStockStatusMessage, getRemainingStock, isProductOutOfStock } from '@/utils/stockUtils';
 
 interface ProductPickerProps {
   selectedProducts: Product[];
+  products: Product[];
   handleAddToCartProduct: (productId: string) => void;
 }
 
 const LOW_STOCK_THRESHOLD = 5;
 
-const ProductPicker = ({ selectedProducts, handleAddToCartProduct }: ProductPickerProps) => {
-  const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0].id);
+const ProductPicker = ({ selectedProducts, products, handleAddToCartProduct }: ProductPickerProps) => {
+  const [selectedProductId, setSelectedProductId] = useState<string>(products[0]?.id || '');
 
   const getStockStatusMessages = () => {
-    const messages = PRODUCTS.map((product) => {
-      const remainingStock = getRemainingStock(product, selectedProducts);
+    const messages = products
+      .map((product) => {
+        const remainingStock = getRemainingStock(product, selectedProducts);
 
-      if (remainingStock === 0 || remainingStock <= LOW_STOCK_THRESHOLD) {
-        return createStockStatusMessage(product, remainingStock);
-      }
+        if (remainingStock === 0 || remainingStock <= LOW_STOCK_THRESHOLD) {
+          return createStockStatusMessage(product, remainingStock);
+        }
 
-      return null;
-    }).filter(Boolean);
+        return null;
+      })
+      .filter(Boolean);
 
     return messages.join('\n');
   };
@@ -35,9 +39,10 @@ const ProductPicker = ({ selectedProducts, handleAddToCartProduct }: ProductPick
         value={selectedProductId}
         onChange={(e) => setSelectedProductId(e.target.value)}
       >
-        {PRODUCTS.map((product) => (
+        {products.map((product) => (
           <option key={product.id} value={product.id} disabled={isProductOutOfStock(product, selectedProducts)}>
-            {product.name} - {product.price.toLocaleString()}원
+            {getSaleIcon(product)}
+            {product.name} - {getDisplayPrice(product).toLocaleString()}원
             {isProductOutOfStock(product, selectedProducts) ? ' (품절)' : ''}
           </option>
         ))}
