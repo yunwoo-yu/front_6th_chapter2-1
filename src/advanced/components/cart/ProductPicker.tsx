@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Product } from '@/lib/products';
+import { isTuesday } from '@/utils/dateUtils';
 import { createStockStatusMessage, getRemainingStock, isProductOutOfStock } from '@/utils/stockUtils';
 
 interface ProductPickerProps {

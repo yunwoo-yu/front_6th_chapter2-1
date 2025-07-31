@@ -9,8 +9,16 @@ interface OrderSummaryProps {
 
 const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
   const discountSummary = calculateDiscountSummary(selectedProducts);
-  const { originalTotal, discountedTotal, totalSavings, totalDiscountRate, isBulkDiscountActive, itemDiscounts } =
-    discountSummary;
+  const {
+    originalTotal,
+    discountedTotal,
+    totalSavings,
+    totalDiscountRate,
+    isBulkDiscountActive,
+    isTuesdayActive,
+    tuesdayDiscountRate,
+    itemDiscounts,
+  } = discountSummary;
 
   const totalPoints = calculateTotalPoints(discountedTotal, selectedProducts);
   const pointsBreakdown = getPointsBreakdown(discountedTotal, selectedProducts);
@@ -58,6 +66,13 @@ const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
             </div>
           )}
 
+          {isTuesdayActive && (
+            <div className="flex justify-between text-sm tracking-wide text-purple-400">
+              <span className="text-xs">🎉 화요일 특가</span>
+              <span className="text-xs">-10%</span>
+            </div>
+          )}
+
           <div className="flex justify-between text-sm tracking-wide text-gray-400">
             <span>Shipping</span>
             <span>Free</span>
@@ -86,18 +101,21 @@ const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
                 적립 포인트: <span className="font-bold">{totalPoints}p</span>
               </div>
               <div className="text-2xs opacity-70 mt-1">
-                기본: {pointsBreakdown.basePoints}p{pointsBreakdown.hasKeyboardMouse && ', 키보드+마우스 세트 +50p'}
+                기본: {pointsBreakdown.basePoints}p{pointsBreakdown.isTuesdayActive && ', 화요일 2배'}
+                {pointsBreakdown.hasKeyboardMouse && ', 키보드+마우스 세트 +50p'}
                 {pointsBreakdown.hasFullSet && ', 풀세트 구매 +100p'}
                 {pointsBreakdown.quantityBonusPoints > 0 && `, ${pointsBreakdown.quantityTierText}`}
               </div>
             </div>
           </div>
-          <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg hidden">
-            <div className="flex items-center gap-2">
-              <span className="text-2xs">🎉</span>
-              <span className="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
+          {isTuesdayActive && discountedTotal > 0 && (
+            <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg">
+              <div className="flex items-center gap-2">
+                <span className="text-2xs">🎉</span>
+                <span className="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <button className="w-full py-4 bg-white text-black text-sm font-normal uppercase tracking-super-wide cursor-pointer mt-6 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30">

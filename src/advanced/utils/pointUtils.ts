@@ -1,5 +1,7 @@
 import { Product } from '@/lib/products';
 
+import { isTuesday } from './dateUtils';
+
 // 포인트 관련 상수
 export const POINT_CONFIG = {
   // 기본 포인트 계산 (최종 결제 금액의 0.1%)
@@ -17,13 +19,19 @@ export const POINT_CONFIG = {
     KEYBOARD_MOUSE: 50, // 키보드+마우스 세트
     FULL_SET: 100, // 풀세트 구매
   },
+
+  // 화요일 포인트 2배 보너스
+  TUESDAY_MULTIPLIER: 2,
 } as const;
 
 /**
- * 기본 포인트 계산 (결제 금액의 0.1%)
+ * 기본 포인트 계산 (결제 금액의 0.1%, 화요일 2배)
  */
 export const calculateBasePoints = (finalAmount: number): number => {
-  return Math.floor(finalAmount * POINT_CONFIG.BASE_RATE);
+  const basePoints = Math.floor(finalAmount * POINT_CONFIG.BASE_RATE);
+
+  // 화요일에는 기본 포인트 2배
+  return isTuesday() ? basePoints * POINT_CONFIG.TUESDAY_MULTIPLIER : basePoints;
 };
 
 /**
@@ -102,6 +110,7 @@ export const getPointsBreakdown = (finalAmount: number, selectedProducts: Produc
   const totalPoints = basePoints + quantityBonusPoints + comboBonusPoints;
   const hasKeyboardMouse = hasKeyboardMouseCombo(selectedProducts);
   const hasFullSet = hasFullSetCombo(selectedProducts);
+  const isTuesdayActive = isTuesday();
 
   return {
     basePoints,
@@ -111,6 +120,7 @@ export const getPointsBreakdown = (finalAmount: number, selectedProducts: Produc
     totalQuantity,
     hasKeyboardMouse,
     hasFullSet,
+    isTuesdayActive,
     quantityTierText: getQuantityTierText(totalQuantity),
   };
 };

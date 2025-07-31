@@ -1,5 +1,7 @@
 import { Product } from '@/lib/products';
 
+import { isTuesday } from './dateUtils';
+
 export const DISCOUNT_CONFIG = {
   ITEM_RATES: {
     p1: 0.1, // 버그 없애는 키보드 - 10%
@@ -8,6 +10,7 @@ export const DISCOUNT_CONFIG = {
     p5: 0.25, // 코딩할 때 듣는 Lo-Fi 스피커 - 25%
   } as Record<string, number>,
   BULK_RATE: 0.25, // 30개 이상 시 25% 할인
+  TUESDAY_RATE: 0.1, // 화요일 특가 10% 추가 할인
   THRESHOLDS: {
     ITEM_DISCOUNT: 10, // 개별 상품 할인 최소 수량
     BULK_PURCHASE: 30, // 대량구매 할인 최소 수량
@@ -56,6 +59,18 @@ export const applyBulkDiscount = (price: number): number => {
 };
 
 /**
+ * 화요일 특가 할인 적용된 가격 계산
+ * 다른 할인과 중복 적용됨
+ */
+export const applyTuesdayDiscount = (price: number): number => {
+  if (!isTuesday() || price <= 0) {
+    return price;
+  }
+
+  return Math.round(price * (1 - DISCOUNT_CONFIG.TUESDAY_RATE));
+};
+
+/**
  * 상품의 최종 할인 가격 계산 (개별 할인 → 대량구매 할인 순서)
  */
 export const calculateDiscountedPrice = (product: Product, selectedProducts: Product[]): number => {
@@ -75,7 +90,7 @@ export const calculateDiscountedPrice = (product: Product, selectedProducts: Pro
 };
 
 /**
- * 전체 할인 정보 계산
+ * 전체 할인 정보 계산 (화요일 특가 포함)
  */
 export const calculateDiscountSummary = (selectedProducts: Product[]) => {
   const totalQuantity = selectedProducts.reduce((sum, product) => sum + product.quantity, 0);
@@ -107,17 +122,23 @@ export const calculateDiscountSummary = (selectedProducts: Product[]) => {
     }, 0);
   }
 
-  const totalSavings = originalTotal - discountedTotal;
+  // 화요일 특가 적용 (다른 할인과 중복 적용)
+  const finalTotal = applyTuesdayDiscount(discountedTotal);
+  const isTuesdayActive = isTuesday();
+
+  const totalSavings = originalTotal - finalTotal;
   const totalDiscountRate = originalTotal > 0 ? totalSavings / originalTotal : 0;
 
   return {
     totalQuantity,
     originalTotal,
-    discountedTotal,
+    discountedTotal: finalTotal,
     totalSavings,
     totalDiscountRate,
     isBulkDiscountActive,
     bulkDiscountRate: isBulkDiscountActive ? DISCOUNT_CONFIG.BULK_RATE : 0,
+    isTuesdayActive,
+    tuesdayDiscountRate: isTuesdayActive ? DISCOUNT_CONFIG.TUESDAY_RATE : 0,
     itemDiscounts,
   };
 };
