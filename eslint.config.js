@@ -44,7 +44,15 @@ export default defineConfig([
       'simple-import-sort/exports': 'error', // export 문을 알파벳순으로 정렬
 
       // === 변수 및 코드 품질 ===
-      'no-unused-vars': 'error', // 사용하지 않는 변수 금지 (불필요한 코드 제거)
+      'no-unused-vars': 'off', // TypeScript에서는 @typescript-eslint/no-unused-vars 사용
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_', // _로 시작하는 매개변수 무시
+          varsIgnorePattern: '^_', // _로 시작하는 변수 무시
+          ignoreRestSiblings: true, // 구조분해할당에서 나머지 형제 무시
+        },
+      ],
       'no-console': 'warn', // console.log 사용 경고 (운영환경 배포시 제거 필요)
       'no-var': 'error', // var 사용 금지 (let/const 사용 강제)
       'prefer-const': 'error', // 재할당 없는 변수는 const 사용 강제
