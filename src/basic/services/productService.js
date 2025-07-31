@@ -1,13 +1,21 @@
-import { products } from '../data';
+import { products } from '../data/index.js';
 
 let selectDropdownElement = null;
 let stockDisplayElement = null;
 
+/**
+ * 상품 관련 DOM 요소 초기화
+ * @param {HTMLElement} selectElement - 상품 선택 드롭다운
+ * @param {HTMLElement} stockElement - 재고 상태 표시 요소
+ */
 export function initProductElements(selectElement, stockElement) {
   selectDropdownElement = selectElement;
   stockDisplayElement = stockElement;
 }
 
+/**
+ * 상품 옵션 렌더링
+ */
 export function renderProductOptions() {
   if (!selectDropdownElement) return;
 
@@ -17,13 +25,15 @@ export function renderProductOptions() {
 
   products.forEach((product) => {
     const option = createProductOption(product);
-
     selectDropdownElement.appendChild(option);
   });
 
   selectDropdownElement.style.borderColor = totalStockCount < 50 ? 'orange' : '';
 }
 
+/**
+ * 재고 상태 렌더링
+ */
 export function renderStockStatus() {
   if (!stockDisplayElement) return;
 
@@ -37,50 +47,58 @@ export function renderStockStatus() {
   stockDisplayElement.textContent = lowStockMessages;
 }
 
+/**
+ * ID로 상품 찾기
+ * @param {string} productId - 상품 ID
+ * @returns {Object|undefined} 상품 객체
+ */
 export function findProductById(productId) {
   return products.find((product) => product.id === productId);
 }
 
+/**
+ * 재고 차감
+ * @param {string} productId - 상품 ID
+ * @param {number} quantity - 차감할 수량
+ * @returns {boolean} 성공 여부
+ */
 export function removeStock(productId, quantity = 1) {
   const product = findProductById(productId);
 
   if (!product || product.quantity < quantity) return false;
 
   product.quantity -= quantity;
-
   return true;
 }
 
-export function addStock(productId, quantity = 1) {
+/**
+ * 재고 복구
+ * @param {string} productId - 상품 ID
+ * @param {number} quantity - 복구할 수량
+ */
+export function restoreStock(productId, quantity = 1) {
   const product = findProductById(productId);
 
-  if (!product) return false;
-
-  product.quantity += quantity;
-
-  return true;
+  if (product) {
+    product.quantity += quantity;
+  }
 }
 
-export function validateStock(productId, requestedQuantity) {
-  const product = findProductById(productId);
-
-  return product ? product.quantity >= requestedQuantity : false;
-}
-
+/**
+ * 상품 옵션 요소 생성
+ * @param {Object} product - 상품 정보
+ * @returns {HTMLElement} option 요소
+ */
 function createProductOption(product) {
   const option = document.createElement('option');
-
   option.value = product.id;
 
   if (product.quantity === 0) {
-    const saleText = buildSaleText(product);
-
-    option.textContent = `${product.name} - ${product.discountPrice}원 (품절)${saleText}`;
+    option.textContent = `${product.name} - ${product.discountPrice}원 - 품절`;
     option.disabled = true;
     option.className = 'text-gray-400';
   } else {
     const displayInfo = buildProductDisplayInfo(product);
-
     option.textContent = displayInfo.text;
     option.className = displayInfo.className;
   }
@@ -88,19 +106,27 @@ function createProductOption(product) {
   return option;
 }
 
+/**
+ * 세일 텍스트 생성
+ * @param {Object} product - 상품 정보
+ * @returns {string} 세일 텍스트
+ */
 function buildSaleText(product) {
   const saleLabels = [];
 
   if (product.onSale) saleLabels.push(' ⚡SALE');
-
   if (product.suggestSale) saleLabels.push(' 💝추천');
 
   return saleLabels.join('');
 }
 
+/**
+ * 상품 표시 정보 생성
+ * @param {Object} product - 상품 정보
+ * @returns {Object} 표시 정보 (text, className)
+ */
 function buildProductDisplayInfo(product) {
   const { name, discountPrice, price, onSale, suggestSale } = product;
-
   const saleText = buildSaleText(product);
 
   // 세일 조합별 표시 정보 매핑
@@ -124,9 +150,7 @@ function buildProductDisplayInfo(product) {
   };
 
   if (onSale && suggestSale) return saleDisplayMap.both;
-
   if (onSale) return saleDisplayMap.lightning;
-
   if (suggestSale) return saleDisplayMap.suggest;
 
   return saleDisplayMap.none;
