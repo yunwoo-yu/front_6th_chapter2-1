@@ -16,7 +16,6 @@ const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
     totalDiscountRate,
     isBulkDiscountActive,
     isTuesdayActive,
-    tuesdayDiscountRate,
     itemDiscounts,
   } = discountSummary;
 
