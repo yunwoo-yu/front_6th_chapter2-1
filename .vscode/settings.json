@@ -5,5 +5,7 @@
     "source.fixAll": "explicit"
   },
   "eslint.format.enable": true,
-  "eslint.run": "onSave"
+  "eslint.run": "onSave",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.suggest.autoImports": true
 }

@@ -5,7 +5,7 @@
     "jsx": "react-jsx",
     "rootDir": "./",
     "module": "es2015", // module이 node에서 동작해야하는 경우(CommonJS인 경우)에는 moduleResolution의 값은 "node"로 자동 추론된다.
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "baseUrl": "./",
     "outDir": "./build",
     "esModuleInterop": true, // CommonJS와 ES 모듈 간의 상호운용성을 위한 설정
@@ -33,11 +33,12 @@
     "noImplicitReturns": true, // 함수에 return이 없는 경우 에러
     "noFallthroughCasesInSwitch": true, // Switch문이 이상하면 에러
     "skipLibCheck": true, // 타입 체킹을 스킵
-    "allowImportingTsExtensions": true // ts 파일을 import할 때 확장자를 생략할 수 있게 해줌
+    "allowImportingTsExtensions": true, // ts 파일을 import할 때 확장자를 생략할 수 있게 해줌
+    "paths": {
+      "@/*": ["src/advanced/*"]
+    }
   },
-  "paths": {
-    "@/*": ["src/advanced/**/*"]
-  },
+
   "include": ["src/advanced/**/*"],
   "exclude": ["node_modules"]
 }
