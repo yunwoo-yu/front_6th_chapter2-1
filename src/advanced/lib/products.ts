@@ -1,4 +1,15 @@
-export const PRODUCTS = [
+export type Product = {
+  id: string;
+  name: string;
+  discountPrice: number;
+  price: number;
+  quantity: number;
+  onSale: boolean;
+  suggestSale: boolean;
+  discountRate: number;
+};
+
+export const PRODUCTS: Product[] = [
   {
     id: 'p1',
     name: '버그 없애는 키보드',
