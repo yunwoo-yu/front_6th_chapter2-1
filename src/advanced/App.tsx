@@ -7,10 +7,11 @@ import { useCart } from './hooks/useCart';
 
 export default function App() {
   const { selectedProducts, products, handleAddToCartProduct, handleQuantityChange, handleRemoveItem } = useCart();
+  const cartItemCount = selectedProducts.reduce((acc, cur) => acc + cur.quantity, 0);
 
   return (
     <>
-      <Header />
+      <Header cartItemCount={cartItemCount} />
       <GuideToggle />
       <Layout>
         <ShoppingCart
