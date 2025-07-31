@@ -1,20 +1,55 @@
-import { PRODUCTS } from '../../lib/products';
+import { useState } from 'react';
 
-const ProductPicker = () => {
+import { Product, PRODUCTS } from '../../lib/products';
+import { createStockStatusMessage, getRemainingStock, isProductOutOfStock } from '../../utils/stockUtils';
+
+interface ProductPickerProps {
+  selectedProducts: Product[];
+  handleAddToCartProduct: (productId: string) => void;
+}
+
+const LOW_STOCK_THRESHOLD = 5;
+
+const ProductPicker = ({ selectedProducts, handleAddToCartProduct }: ProductPickerProps) => {
+  const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0].id);
+
+  const getStockStatusMessages = () => {
+    const messages = PRODUCTS.map((product) => {
+      const remainingStock = getRemainingStock(product, selectedProducts);
+
+      if (remainingStock === 0 || remainingStock <= LOW_STOCK_THRESHOLD) {
+        return createStockStatusMessage(product, remainingStock);
+      }
+
+      return null;
+    }).filter(Boolean);
+
+    return messages.join('\n');
+  };
+
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
-      <select id="product-select" className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3">
+      <select
+        id="product-select"
+        className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3"
+        value={selectedProductId}
+        onChange={(e) => setSelectedProductId(e.target.value)}
+      >
         {PRODUCTS.map((product) => (
-          <option key={product.id} value={product.id}>
-            {product.name} - {product.price}원
+          <option key={product.id} value={product.id} disabled={isProductOutOfStock(product, selectedProducts)}>
+            {product.name} - {product.price.toLocaleString()}원
+            {isProductOutOfStock(product, selectedProducts) ? ' (품절)' : ''}
           </option>
         ))}
       </select>
-      <button className="w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all">
+      <button
+        className="w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all"
+        onClick={() => handleAddToCartProduct(selectedProductId)}
+      >
         Add to Cart
       </button>
       <div id="stock-status" className="text-xs text-red-500 mt-3 whitespace-pre-line">
-        에러 방지 노트북 파우치: 품절
+        {getStockStatusMessages()}
       </div>
     </div>
   );
