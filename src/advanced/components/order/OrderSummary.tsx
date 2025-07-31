@@ -1,33 +1,33 @@
-const OrderSummary = () => {
+import { Product } from '@/lib/products';
+
+interface OrderSummaryProps {
+  selectedProducts: Product[];
+}
+
+const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
+  const subtotal = selectedProducts.reduce((sum, product) => sum + product.discountPrice * product.quantity, 0);
+  const loyaltyPoints =
+    Math.floor(subtotal * 0.001) + (selectedProducts.length >= 2 ? 50 : 0) + (selectedProducts.length >= 4 ? 100 : 0);
+
   return (
     <div className="bg-black text-white p-8 flex flex-col">
       <h2 className="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
       <div className="flex-1 flex flex-col">
         <div id="summary-details" className="space-y-3">
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>버그 없애는 키보드 x 1</span>
-            <span>₩8,000</span>
-          </div>
+          {selectedProducts.map((product) => (
+            <div key={product.id} className="flex justify-between text-xs tracking-wide text-gray-400">
+              <span>
+                {product.name} x {product.quantity}
+              </span>
+              <span>₩{(product.discountPrice * product.quantity).toLocaleString()}</span>
+            </div>
+          ))}
 
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>생산성 폭발 마우스 x 1</span>
-            <span>₩15,200</span>
-          </div>
+          {selectedProducts.length > 0 && <div className="border-t border-white/10 my-3"></div>}
 
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>거북목 탈출 모니터암 x 1</span>
-            <span>₩22,800</span>
-          </div>
-
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>코딩할 때 듣는 Lo-Fi 스피커 x 1</span>
-            <span>₩19,000</span>
-          </div>
-
-          <div className="border-t border-white/10 my-3"></div>
           <div className="flex justify-between text-sm tracking-wide">
             <span>Subtotal</span>
-            <span>₩65,000</span>
+            <span>₩{subtotal.toLocaleString()}</span>
           </div>
 
           <div className="flex justify-between text-sm tracking-wide text-gray-400">
@@ -40,13 +40,16 @@ const OrderSummary = () => {
           <div id="cart-total" className="pt-5 border-t border-white/10">
             <div className="flex justify-between items-baseline">
               <span className="text-sm uppercase tracking-wider">Total</span>
-              <div className="text-2xl tracking-tight">₩65,000</div>
+              <div className="text-2xl tracking-tight">₩{subtotal.toLocaleString()}</div>
             </div>
             <div id="loyalty-points" className="text-xs text-blue-400 mt-2 text-right block">
               <div>
-                적립 포인트: <span className="font-bold">215p</span>
+                적립 포인트: <span className="font-bold">{loyaltyPoints}p</span>
               </div>
-              <div className="text-2xs opacity-70 mt-1">기본: 65p, 키보드+마우스 세트 +50p, 풀세트 구매 +100p</div>
+              <div className="text-2xs opacity-70 mt-1">
+                기본: {Math.floor(subtotal * 0.001)}p{selectedProducts.length >= 2 && ', 키보드+마우스 세트 +50p'}
+                {selectedProducts.length >= 4 && ', 풀세트 구매 +100p'}
+              </div>
             </div>
           </div>
           <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg hidden">
