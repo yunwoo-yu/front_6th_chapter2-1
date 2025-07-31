@@ -80,25 +80,32 @@ export const calculateDiscountedPrice = (product: Product, selectedProducts: Pro
 export const calculateDiscountSummary = (selectedProducts: Product[]) => {
   const totalQuantity = selectedProducts.reduce((sum, product) => sum + product.quantity, 0);
   const isBulkDiscountActive = hasBulkDiscount(totalQuantity);
-
-  // 개별 상품 할인 정보
-  const itemDiscounts = selectedProducts
-    .filter((product) => hasItemDiscount(product.id, product.quantity))
-    .map((product) => ({
-      productId: product.id,
-      productName: product.name,
-      discountRate: getItemDiscountRate(product.id),
-      quantity: product.quantity,
-    }));
-
-  // 원가 총합 계산
   const originalTotal = selectedProducts.reduce((sum, product) => sum + product.discountPrice * product.quantity, 0);
+  let discountedTotal: number;
+  let itemDiscounts: Array<{ productId: string; productName: string; discountRate: number; quantity: number }> = [];
 
-  // 할인 적용된 총합 계산
-  const discountedTotal = selectedProducts.reduce(
-    (sum, product) => sum + calculateDiscountedPrice(product, selectedProducts) * product.quantity,
-    0
-  );
+  if (isBulkDiscountActive) {
+    // 대량구매 할인이 활성화되면 개별 할인 무시하고 전체에 25% 할인
+    discountedTotal = applyBulkDiscount(originalTotal);
+  } else {
+    // 개별 상품 할인만 적용
+    itemDiscounts = selectedProducts
+      .filter((product) => hasItemDiscount(product.id, product.quantity))
+      .map((product) => ({
+        productId: product.id,
+        productName: product.name,
+        discountRate: getItemDiscountRate(product.id),
+        quantity: product.quantity,
+      }));
+
+    discountedTotal = selectedProducts.reduce((sum, product) => {
+      const quantity = product.quantity;
+      if (hasItemDiscount(product.id, quantity)) {
+        return sum + applyItemDiscount(product.discountPrice, product.id, quantity) * quantity;
+      }
+      return sum + product.discountPrice * quantity;
+    }, 0);
+  }
 
   const totalSavings = originalTotal - discountedTotal;
   const totalDiscountRate = originalTotal > 0 ? totalSavings / originalTotal : 0;

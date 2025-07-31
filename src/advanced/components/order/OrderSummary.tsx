@@ -1,6 +1,7 @@
 import { Product } from '@/lib/products';
 
 import { calculateDiscountSummary } from '../../utils/discountUtils';
+import { calculateTotalPoints, getPointsBreakdown } from '../../utils/pointUtils';
 
 interface OrderSummaryProps {
   selectedProducts: Product[];
@@ -11,10 +12,8 @@ const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
   const { originalTotal, discountedTotal, totalSavings, totalDiscountRate, isBulkDiscountActive, itemDiscounts } =
     discountSummary;
 
-  const loyaltyPoints =
-    Math.floor(discountedTotal * 0.001) +
-    (selectedProducts.length >= 2 ? 50 : 0) +
-    (selectedProducts.length >= 4 ? 100 : 0);
+  const totalPoints = calculateTotalPoints(discountedTotal, selectedProducts);
+  const pointsBreakdown = getPointsBreakdown(discountedTotal, selectedProducts);
 
   return (
     <div className="bg-black text-white p-8 flex flex-col">
@@ -84,12 +83,12 @@ const OrderSummary = ({ selectedProducts }: OrderSummaryProps) => {
             </div>
             <div id="loyalty-points" className="text-xs text-blue-400 mt-2 text-right block">
               <div>
-                적립 포인트: <span className="font-bold">{loyaltyPoints}p</span>
+                적립 포인트: <span className="font-bold">{totalPoints}p</span>
               </div>
               <div className="text-2xs opacity-70 mt-1">
-                기본: {Math.floor(discountedTotal * 0.001)}p
-                {selectedProducts.length >= 2 && ', 키보드+마우스 세트 +50p'}
-                {selectedProducts.length >= 4 && ', 풀세트 구매 +100p'}
+                기본: {pointsBreakdown.basePoints}p{pointsBreakdown.hasKeyboardMouse && ', 키보드+마우스 세트 +50p'}
+                {pointsBreakdown.hasFullSet && ', 풀세트 구매 +100p'}
+                {pointsBreakdown.quantityBonusPoints > 0 && `, ${pointsBreakdown.quantityTierText}`}
               </div>
             </div>
           </div>
