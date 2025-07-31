@@ -9,6 +9,7 @@ export const useCart = () => {
 
   const handleAddToCartProduct = (productId: string) => {
     const product = PRODUCTS.find((item) => item.id === productId);
+
     if (!product) return;
 
     if (isProductOutOfStock(product, selectedProducts)) return;
@@ -24,6 +25,7 @@ export const useCart = () => {
 
   const handleQuantityChange = (productId: string, change: number) => {
     const product = PRODUCTS.find((item) => item.id === productId);
+
     if (!product) return;
 
     setSelectedProducts((prevProducts) => {
@@ -31,6 +33,7 @@ export const useCart = () => {
         .map((item) => {
           if (item.id === productId) {
             const newQuantity = Math.max(0, Math.min(product.quantity, item.quantity + change));
+
             return { ...item, quantity: newQuantity };
           }
           return item;
