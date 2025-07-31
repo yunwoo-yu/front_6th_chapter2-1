@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import ShoppingGuide from './ShoppingGuide';
+import ShoppingGuide from '@/components/guide/ShoppingGuide';
 
 const GuideToggle = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
